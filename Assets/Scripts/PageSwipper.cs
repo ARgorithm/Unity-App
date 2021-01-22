@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+/* This script controls the scrolling under Gameobject UI->ARgorithmCloud Menu->Panel List Holder
+Don't do changes to the below script */
 
 public class PageSwipper : MonoBehaviour , IDragHandler, IEndDragHandler
 {
@@ -20,7 +22,7 @@ public class PageSwipper : MonoBehaviour , IDragHandler, IEndDragHandler
         transform.position = panelLocation - new Vector3(0, difference, 0);
         
     }
-
+    /* Prevents the swipping downwards below a certain point*/
     public float easing = 0.5f;
 
     public void OnEndDrag(PointerEventData data)
