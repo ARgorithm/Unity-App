@@ -187,8 +187,6 @@ namespace ARgorithmAPI
                             });break;
                     }
                 }
-
-                Debug.Log(token);
             }
         }
 
