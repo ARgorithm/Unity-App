@@ -6,14 +6,17 @@ using UnityEngine;
 namespace ARgorithmAPI.Models{
     
     [Serializable]
+    public class Response{
+        public string status;
+    }
+
+    [Serializable]
     public class ConnectionRawResponse{
         public string auth;
     }
 
     [Serializable]
-    public class ConnectionResponse{
-        public string status;
-    }
+    public class ConnectionResponse:Response{}
 
     [Serializable]
     public class Account{
@@ -22,15 +25,16 @@ namespace ARgorithmAPI.Models{
     }
 
     [Serializable]
-    public class CreationResponse{
-        public string status;
+    public class CreationResponse:Response{}
+
+    [Serializable]
+    public class LoginRawResponse{
+        public string access_token;
+        public string token_type;
     }
 
     [Serializable]
-    public class LoginResponse{
-        public string status;
-        public string token;
-    }
+    public class LoginResponse:Response{}
 
     [Serializable]
     public class ARgorithm{

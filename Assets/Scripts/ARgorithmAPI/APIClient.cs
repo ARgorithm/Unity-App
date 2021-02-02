@@ -12,6 +12,7 @@ namespace ARgorithmAPI
     {
         private string serverEndpoint = "https://argorithm.el.r.appspot.com";
         private bool auth = false;
+        private string token = null;
 
         public IEnumerator connect(string url, System.Action<ConnectionResponse> callback){
             using(UnityWebRequest webRequest = UnityWebRequest.Get(url+"/argorithm"))
@@ -68,11 +69,19 @@ namespace ARgorithmAPI
                                 status="SUCCESS"
                             });
                             break;
+                        
                         case 409: callback(
                             new CreationResponse {
                                 status="EXISTING"
                             });
                             break;
+                        
+                        case 405: callback(
+                            new CreationResponse{
+                                status="NOT_ALLOWED"
+                            });
+                            break;
+                        
                         default:callback(
                             new CreationResponse {
                                 status="FAILURE"
@@ -80,11 +89,63 @@ namespace ARgorithmAPI
                             break;
                     }
                 }
-                
             }
         }
 
-        // public IEnumerator login(Account user,System.Action<AuthResponse> callback){}
+        public IEnumerator login(Account user,System.Action<LoginResponse> callback){
+            WWWForm form = new WWWForm();
+            form.AddField("username" , user.email);
+            form.AddField("password" , user.password);
+            using(UnityWebRequest webRequest = UnityWebRequest.Post(serverEndpoint+"/users/login",form)){
+                yield return webRequest.SendWebRequest();
+                
+                if(webRequest.isNetworkError){
+                    callback(new LoginResponse {
+                        status="FAILURE"
+                    });
+                }
+
+                if (webRequest.isDone){
+                    switch (webRequest.responseCode)
+                    {
+                        case 200:
+                            LoginRawResponse response = JsonUtility.FromJson<LoginRawResponse>(
+                                webRequest.downloadHandler.text
+                            );
+                            token = response.access_token;
+                            callback(new LoginResponse{
+                                status="SUCCESS"
+                            });
+                            break;
+                        
+                        case 404: 
+                            callback(new LoginResponse{
+                                status="NOT_FOUND"
+                            }); 
+                            break;
+                        
+                        case 401: 
+                            callback(new LoginResponse{
+                                status="INCORRECT_PASSWORD"
+                            }); 
+                            break;
+                        
+                        case 405: 
+                            callback(new LoginResponse{
+                                status="NOT_ALLOWED"
+                            }); 
+                            break;
+                        
+                        default: 
+                            callback(new LoginResponse{
+                                status="FAILURE"
+                            });break;
+                    }
+                }
+
+                Debug.Log(token);
+            }
+        }
 
         // public IEnumerator list(System.Action<List<ARgorithm>> callback){}
 
