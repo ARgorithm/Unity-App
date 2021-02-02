@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace ARgorithmAPI.Singleton
 {
+    /*
+    The Singleton class creates one API object and places it in the game object
+    */
     public class Singleton<T> : MonoBehaviour
         where T : Component
     {
