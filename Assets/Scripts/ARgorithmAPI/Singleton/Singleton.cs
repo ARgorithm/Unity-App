@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-namespace APIClient.Singleton
+namespace ARgorithmAPI.Singleton
 {
     public class Singleton<T> : MonoBehaviour
         where T : Component
