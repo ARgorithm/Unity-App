@@ -21,14 +21,19 @@ public class Login : MonoBehaviour
     public InputField ExistingPasswordInput;
     public Button LoginButton;
 
-    
+    public GameObject ArgorithmCloudMenu;
+    public GameObject Mainmenu;
+    public GameObject LoginMenu;
 
-    //Function that use ARgorithm APIclient to create Account
-    //The CreationResponse.status can have following values
-    //FAILURE: Error has occured
-    //SUCCESS: User account has been created
-    //EXISTING: Email is already registered
-    //NOT_ALLOWED: Authentication feature at endpoint is disabled, skip login
+    //Alert Box adds UI text ryt below Create Account Button to Alert the users 
+    //Or give the user some kind of information like, invalid password, username, 
+    //unable to connect to server etc. Remember to reset the Alert box to empty string.
+    void Alert(string text)
+    {
+        AlertBox.GetComponent<TextMeshProUGUI>().SetText(text);
+    }
+
+    //Function that uses ARgorithm APIclient to create Account
     public void createAccount(string email,string password)
     {
         Debug.Log(email + " " + password);
@@ -53,30 +58,28 @@ public class Login : MonoBehaviour
                 {
                     //Account is created 
                     //Login the user with the credentials
+                    login(NewEmailInput.text, NewPasswordInput.text);
                     break;
                 }
             case "EXISTING":
                 {
                     //Alert the user email is already registered 
                     //use login to login
+                    Alert("Email Already Exists. Please Login.");
                     break;
                 }
             default :
                 {
                     //Navigate to Main Menu
                     //Alert the user Try connecting to server again
+                    LoginMenu.SetActive(false);
+                    Mainmenu.SetActive(true);
                     break;
                 }
         }
     }
 
-    //Function that use ARgorithm APIclient to LOGIN to existing Account
-    //The LoginResponse.status can have following values
-    //FAILURE: Error has occured
-    //SUCCESS: Login successful
-    //NOT_ALLOWED: Authentication feature at endpoint is disabled, skip login
-    //NOT_FOUND: Email is not registered
-    //INCORRECT_PASSWORD: Password is incorrect
+    //Function that uses ARgorithm APIclient to LOGIN to existing Account
     public void login(string email, string password)
     {
         StartCoroutine(
@@ -99,22 +102,28 @@ public class Login : MonoBehaviour
             case "SUCCESS":
                 {
                     //Navigate to cloud Menu
+                    ArgorithmCloudMenu.SetActive(true);
+                    LoginMenu.SetActive(false);
                     break;
                 }
             case "NOT_FOUND":
                 {
                     //Alert Email was not found
+                    Alert("Email was not found");
                     break;
                 }
             case "INCORRECT_PASSWORD":
                 {
                     //Alert the user the password is incorrect
+                    Alert("Incorrect Password");
                     break;
                 }
             default:
                 {
                     //Navigate to Main Menu
                     //Alert the user Try connecting to server again
+                    Mainmenu.SetActive(true);
+                    LoginMenu.SetActive(false);
                     break;
                 }
 
@@ -259,14 +268,7 @@ public class Login : MonoBehaviour
             }
         });
 
-        //Alert Box adds UI text ryt below Create Account Button to Alert the users 
-        //Or give the user some kind of information like, invalid password, username, 
-        //unable to connect to server etc. Remember to reset the Alert box to empty string.
-        void Alert(string text)
-        {
-            AlertBox.GetComponent<TextMeshProUGUI>().SetText(text);
-        }
-
+        
     }
 
 }

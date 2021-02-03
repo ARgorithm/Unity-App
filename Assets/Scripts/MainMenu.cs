@@ -13,12 +13,21 @@ public class MainMenu : MonoBehaviour
     public Button ConnectToLocalServerButton;
     public InputField ServerEndpointInput;
 
-    //Fucntion to verify in case we get AUTH as a response from connect
-    //The LoginResponse.status can have following values
-    //FAILURE: Error has occured
-    //SUCCESS: Login successful
-    //RESET: Will have to login again
+    public GameObject ArgorithmCloudMenu;
+    public GameObject Mainmenu;
+    public GameObject LoginMenu;
 
+    public GameObject AlertBoxMain;
+
+    //Alert Box adds UI text ryt below Connect to local server to Alert the users 
+    //Or give the user some kind of information like, invalid password, username, 
+    //unable to connect to server etc. Remember to reset the Alert box to empty string.
+    void AlertMain(string text)
+    {
+        AlertBoxMain.GetComponent<TextMeshProUGUI>().SetText(text);
+    }
+
+    //Function to verify in case we get AUTH as a response from connect function
     void verify()
     {
         StartCoroutine(
@@ -36,22 +45,21 @@ public class MainMenu : MonoBehaviour
             case "SUCCESS":
                 {
                     //Move to ARgorithm Cloud Menu
+                    Mainmenu.SetActive(false);
+                    ArgorithmCloudMenu.SetActive(true);
                     break;
                 }
             default:
                 {
                     //Move to Login Menu
+                    Mainmenu.SetActive(false);
+                    LoginMenu.SetActive(true);
                     break;
                 }
         }
     }
 
-    //Function to create connect to ARgorithm server
-    //The ConnectionResponse.status can have following values
-    //FAILURE: Error has occured
-    //AUTH: Connection has been estabilished and Authentication is required
-    //SUCCESS: Connection has been estabilished and Authentication is not required
-
+    //Function to create session connection to ARgorithm server
     public void connect(string uri = "https://argorithm.el.r.appspot.com")
     {
         StartCoroutine(
@@ -67,46 +75,53 @@ public class MainMenu : MonoBehaviour
         Debug.Log(c.status);
         switch (c.status)
         {
-            //Coroutine APIclient.Intance.verify
             case "AUTH":
                 {
-                    Debug.Log("AUTH switch");
                     verify();
                     break;
                 }
             case "SUCCESS":
                 {
                     //Move to ARgorithm Cloud Menu
+                    Mainmenu.SetActive(false);
+                    ArgorithmCloudMenu.SetActive(true);
                     break;
                 }
             default:
                 {
-                    Debug.Log("Failure");
                     //Alert the user for Error!!
+                    AlertMain("Connection Error");
                     break;
                 }
             
         }
     }
 
+    
+
     void Start()
     {
-        //Should check whether the user is already logged into the App and or not.
-        //If logged in show ARgorithm Cloud Menu 
-        //else show Login Menu
+        //Makes Connect to local server button not interactable
+        ConnectToLocalServerButton.interactable = false;
+
         ConnectToCloudButton.onClick.AddListener(() =>
         {
-            Debug.Log("Connect to Cloud Server Button");
             connect();
         });
 
+        //To verfiy the server endpoint value that was entered
+        ServerEndpointInput.onValueChanged.AddListener(delegate
+        {
+            ConnectToLocalServerButton.interactable = true;
+        });
+
         //Connects to Locally generated Server endpoint
-        //Takes "Enter server endpoint" inputfield value at 
+        //Takes "Enter server endpoint" as input value
         ConnectToLocalServerButton.onClick.AddListener(() =>
         {
-            Debug.Log("Connect to Local Server Button");
-            Debug.Log(ServerEndpointInput.text);
+            //Debug.Log(ServerEndpointInput.text);
             connect(ServerEndpointInput.text);
         });
     }
+    
 }
