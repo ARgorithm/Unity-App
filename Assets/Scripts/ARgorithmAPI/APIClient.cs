@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using ARgorithmAPI.Models;
 using ARgorithmAPI.Singleton;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Converters;
 
 namespace ARgorithmAPI
 {
@@ -52,7 +55,7 @@ namespace ARgorithmAPI
                 
                 if(webRequest.isDone)
                 {
-                    ConnectionRawResponse response = JsonUtility.FromJson<ConnectionRawResponse>(
+                    ConnectionRawResponse response = JsonConvert.DeserializeObject<ConnectionRawResponse>(
                         webRequest.downloadHandler.text
                     );
                     serverEndpoint = url;
@@ -154,7 +157,7 @@ namespace ARgorithmAPI
                     switch (webRequest.responseCode)
                     {
                         case 200:
-                            LoginRawResponse response = JsonUtility.FromJson<LoginRawResponse>(
+                            LoginRawResponse response = JsonConvert.DeserializeObject<LoginRawResponse>(
                                 webRequest.downloadHandler.text
                             );
                             token = response.access_token;
@@ -207,7 +210,7 @@ namespace ARgorithmAPI
                 if(webRequest.isDone){
                     string value = "{\"items\":" + webRequest.downloadHandler.text + "}";
                     Debug.Log(value);
-                    ARgorithmCollection response = JsonUtility.FromJson<ARgorithmCollection>(value);
+                    ARgorithmCollection response = JsonConvert.DeserializeObject<ARgorithmCollection>(value);
                     callback(response);
                 }
             }
