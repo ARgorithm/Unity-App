@@ -59,7 +59,6 @@ namespace ARgorithmAPI
                         webRequest.downloadHandler.text
                     );
                     serverEndpoint = url;
-                    Debug.Log(serverEndpoint);
                     if (response.auth == "ENABLED")
                     {
                         callback(new ConnectionResponse {
@@ -209,7 +208,6 @@ namespace ARgorithmAPI
 
                 if(webRequest.isDone){
                     string value = "{\"items\":" + webRequest.downloadHandler.text + "}";
-                    Debug.Log(value);
                     ARgorithmCollection response = JsonConvert.DeserializeObject<ARgorithmCollection>(value);
                     callback(response);
                 }
@@ -264,39 +262,42 @@ namespace ARgorithmAPI
             }
         }
 
-        /*
-            BELOW CODE IS ATTEMPT AT RUNNING ARGOTIHMS
-            IGNORE FOR NOW , WILL IMPLEMENT LATER
-        */
+        public IEnumerator run(ExecutionRequest exec,System.Action<ExecutionResponse> callback){
+            string body = JsonConvert.SerializeObject(exec);
+            
+            using(UnityWebRequest webRequest = new UnityWebRequest(serverEndpoint+"/argorithms/run","POST")){
+                byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(body);
+                webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+                webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+                webRequest.SetRequestHeader("authorization","Bearer "+token);
+                webRequest.SetRequestHeader("Content-Type","application/json");
+                yield return webRequest.SendWebRequest();
 
-        // public IEnumerator run(ExecutionRequest exec,System.Action<string> callback){
-        //     string body = JsonUtility.ToJson(exec);
-        //     Debug.Log(body);
-        //     using(UnityWebRequest webRequest = UnityWebRequest.Post(serverEndpoint+"/argorithms/run",body)){
-        //         webRequest.SetRequestHeader("authorization","Bearer "+token);
-        //         webRequest.SetRequestHeader("Content-Type","application/json");
-        //         yield return webRequest.SendWebRequest();
-
-        //         if(webRequest.isNetworkError){
-        //             callback("FAILURE");
-        //         }
+                if(webRequest.isNetworkError){
+                    callback(new ExecutionResponse{
+                        status="FAILURE",
+                        data={}
+                    });
+                }
                 
-        //         if (webRequest.isDone){
-        //             switch (webRequest.responseCode)
-        //             {
-        //                 case 200:
-        //                     callback(webRequest.downloadHandler.text);
-        //                     break;
+                if (webRequest.isDone){
+                    switch (webRequest.responseCode)
+                    {
+                        case 200:
+                            ExecutionResponse res = JsonConvert.DeserializeObject<ExecutionResponse>(webRequest.downloadHandler.text);
+                            callback(res);
+                            break;
 
-        //                 default:
-        //                     Debug.Log(webRequest.responseCode);
-        //                     Debug.Log(webRequest.downloadHandler.text);
-        //                     callback("TRY_AGAIN"); 
-        //                     break;
-        //             }
-        //         }
-        //     }
-        // }
+                        default:
+                            callback(new ExecutionResponse{
+                                status="FAILURE",
+                                data={}
+                            }); 
+                            break;
+                    }
+                }
+            }
+        }
 
     }
 
