@@ -36,7 +36,6 @@ public class Login : MonoBehaviour
     //Function that uses ARgorithm APIclient to create Account
     public void createAccount(string email,string password)
     {
-        Debug.Log(email + " " + password);
         StartCoroutine(
             APIClient.Instance.create(
                 new Account
@@ -51,7 +50,6 @@ public class Login : MonoBehaviour
 
     void callback(CreationResponse c)
     {
-        Debug.Log(c.status);
         switch (c.status)
         {
             case "SUCCESS":
@@ -96,7 +94,6 @@ public class Login : MonoBehaviour
 
     void callback(LoginResponse c)
     {
-        Debug.Log(c.status);
         switch (c.status)
         {
             case "SUCCESS":
@@ -143,7 +140,6 @@ public class Login : MonoBehaviour
         {
             if (NewPasswordInput.text == NewRePasswordInput.text)
             {
-                //Debug.Log("Creating New Account Function");
                 createAccount(NewEmailInput.text, NewPasswordInput.text);
             }
 
@@ -153,7 +149,6 @@ public class Login : MonoBehaviour
         //whether they are registered users on AR cloud server (incomplete function) 
         LoginButton.onClick.AddListener(() =>
         {
-            //Debug.Log("Existing Account Function");
             login(ExistingEmailInput.text, ExistingPasswordInput.text);
         });
 

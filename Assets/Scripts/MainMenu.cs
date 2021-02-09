@@ -39,7 +39,6 @@ public class MainMenu : MonoBehaviour
 
     void callback(LoginResponse c)
     {
-        Debug.Log(c.status);
         switch (c.status)
         {
             case "SUCCESS":
@@ -72,7 +71,6 @@ public class MainMenu : MonoBehaviour
 
     void callback(ConnectionResponse c)
     {
-        Debug.Log(c.status);
         switch (c.status)
         {
             case "AUTH":
@@ -119,7 +117,6 @@ public class MainMenu : MonoBehaviour
         //Takes "Enter server endpoint" as input value
         ConnectToLocalServerButton.onClick.AddListener(() =>
         {
-            //Debug.Log(ServerEndpointInput.text);
             connect(ServerEndpointInput.text);
         });
     }
