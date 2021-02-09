@@ -7,6 +7,7 @@ using TMPro;
 // import library of ARgorithm
 using ARgorithmAPI;
 using ARgorithmAPI.Models;
+using Newtonsoft.Json.Linq;
 
 
 public class ArgorithmCloudMenu : MonoBehaviour
@@ -51,13 +52,20 @@ public class ArgorithmCloudMenu : MonoBehaviour
             child = Item.transform.GetChild(1).gameObject;
             child.GetComponent<TextMeshProUGUI>().SetText(item.description.ToUpper());
 
+            Button ExecuteButton = Item.transform.GetChild(4).GetComponent<Button>();
+            ExecuteButton.onClick.AddListener(() =>
+            {
+                Debug.Log("Execute Button :: " + item.argorithmID);
+
+            });
+
             NoOfAlgos += 1;
         }
 
         // If more than 5 algos are not present, fill up rest of the space with blank boxes
         if (NoOfAlgos < 5)
         {
-            for(int i = 0; i < 5 - NoOfAlgos; i++)
+            for (int i = 0; i < 5 - NoOfAlgos; i++)
             {
                 var Item = Instantiate(ArgorithmUiObject);
                 Item.transform.SetParent(PanelListHolderGameObject);
@@ -71,4 +79,22 @@ public class ArgorithmCloudMenu : MonoBehaviour
         }
     }
 
+    public void run(string argorithmID)
+    {
+        StartCoroutine(
+            APIClient.Instance.run(
+                new ExecutionRequest
+                {
+                    argorithmID = argorithmID,
+                    parameters = new JObject()
+                },
+                (r) => callback(r)
+             )
+        );
+    }
+
+    void callback(ExecutionResponse response)
+    {
+        Debug.Log(response.status);
+    }
 }
