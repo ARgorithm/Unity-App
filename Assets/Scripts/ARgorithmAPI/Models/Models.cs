@@ -60,7 +60,7 @@ namespace ARgorithmAPI.Models{
     [Serializable]
     public class LoginResponse:Response{
         /*
-        The standard API response class for connect response
+        The standard API response class for login response
         */
     }
 
@@ -88,12 +88,18 @@ namespace ARgorithmAPI.Models{
 
     [Serializable]
     public class ExecutionRequest{
+        /*
+        The argorithm/run API request model to get states based on parameters
+        */
         public string argorithmID;
         public JObject parameters;
     }
 
     [Serializable]
     public class State{
+        /*
+        The model for ARgorithmState
+        */
         public string state_type;
         public JObject state_def;
         public string comments;
@@ -101,6 +107,10 @@ namespace ARgorithmAPI.Models{
 
     [Serializable]
     public class ExecutionResponse{
+        /*
+        The argorithm/run API response class with status and states
+        */
+        
         public string status;
         public List<State> data;
     }

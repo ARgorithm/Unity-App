@@ -263,6 +263,15 @@ namespace ARgorithmAPI
         }
 
         public IEnumerator run(ExecutionRequest exec,System.Action<ExecutionResponse> callback){
+            /*
+            Sends execution request to server and gets the states generated on executing
+            ARgorithm to given parameters
+
+            The ExecutionResponse returned can have the following status:
+            - FAILURE: Something went wrong, empty states
+            - run_example: The states are generated on default parameters
+            - run_parameters: The states are generated on given parameters
+            */
             string body = JsonConvert.SerializeObject(exec);
             
             using(UnityWebRequest webRequest = new UnityWebRequest(serverEndpoint+"/argorithms/run","POST")){

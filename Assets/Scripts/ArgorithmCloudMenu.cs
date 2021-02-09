@@ -42,7 +42,6 @@ public class ArgorithmCloudMenu : MonoBehaviour
         //Instantiates the UI object(a prefab) dynamically to list the various algos
         foreach (ARgorithm item in lar.items)
         {
-            Debug.Log(item.argorithmID);
             var Item = Instantiate(ArgorithmUiObject);
             Item.transform.SetParent(PanelListHolderGameObject);
             Item.transform.localScale = new Vector3(1, 1, 1);
@@ -55,8 +54,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
             Button ExecuteButton = Item.transform.GetChild(4).GetComponent<Button>();
             ExecuteButton.onClick.AddListener(() =>
             {
-                Debug.Log("Execute Button :: " + item.argorithmID);
-
+                run(item.argorithmID);
             });
 
             NoOfAlgos += 1;
@@ -81,6 +79,8 @@ public class ArgorithmCloudMenu : MonoBehaviour
 
     public void run(string argorithmID)
     {
+        // This sends an execution request to server and gets the states
+        
         StartCoroutine(
             APIClient.Instance.run(
                 new ExecutionRequest
@@ -95,6 +95,11 @@ public class ArgorithmCloudMenu : MonoBehaviour
 
     void callback(ExecutionResponse response)
     {
+        /* 
+        After the states are recieved, this function is invoked
+
+        This function should send the states to the ARgorithm Parser which in turn send to ARTapToPlace
+        */
         Debug.Log(response.status);
     }
 }
