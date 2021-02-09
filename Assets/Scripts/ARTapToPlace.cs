@@ -20,7 +20,7 @@ public class ARTapToPlace : MonoBehaviour
     public GameObject CommentBox;
 
 
-    void Start()
+    void onEnable()
     {
         aRRaycastManager = FindObjectOfType<ARRaycastManager>();
       
