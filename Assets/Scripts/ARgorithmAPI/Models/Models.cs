@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
 
 namespace ARgorithmAPI.Models{
     /*
@@ -73,8 +74,8 @@ namespace ARgorithmAPI.Models{
         public string description;
         public string function;
         public string filename;
-        public object parameters;
-        public object example;
+        public JObject parameters;
+        public JObject example;
     }
 
     [Serializable]
@@ -83,6 +84,25 @@ namespace ARgorithmAPI.Models{
         The Model class for List of ARgorithms
         */
         public ARgorithm[] items;
+    }
+
+    [Serializable]
+    public class ExecutionRequest{
+        public string argorithmID;
+        public JObject parameters;
+    }
+
+    [Serializable]
+    public class State{
+        public string state_type;
+        public JObject state_def;
+        public string comments;
+    }
+
+    [Serializable]
+    public class ExecutionResponse{
+        public string status;
+        public List<State> data;
     }
 
 }
