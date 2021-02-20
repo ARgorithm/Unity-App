@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARSubsystems;
 using System;
 using TMPro;
-
 public class ARTapToPlace : MonoBehaviour
 {
     //private ARSessionOrigin arOrigin;
@@ -23,10 +22,9 @@ public class ARTapToPlace : MonoBehaviour
     void onEnable()
     {
         aRRaycastManager = FindObjectOfType<ARRaycastManager>();
-      
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!placed)
         {
@@ -42,15 +40,20 @@ public class ARTapToPlace : MonoBehaviour
                 placed = true;
             }
         }
+
+        // Step through the algorithm here
     }
 
     private void PlaceObject()
     {
+        // Change object here with the StateList/EventList
+        // Instantiate everything here.
         Instantiate(cube, PlacementPose.position, PlacementPose.rotation);
     }
 
     private void ChangeComments(string text)
     {
+        // called in updates based on EventList contents with "comments" key
         CommentBox.GetComponent<TextMeshProUGUI>().SetText(text); 
     }
     
