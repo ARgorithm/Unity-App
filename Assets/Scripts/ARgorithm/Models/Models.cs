@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 
-namespace ARgorithmAPI.Models{
+namespace ARgorithm.Models{
     /*
     The models namespace consists of JSON serializable schemas 
     */
@@ -65,7 +65,7 @@ namespace ARgorithmAPI.Models{
     }
 
     [Serializable]
-    public class ARgorithm{
+    public class ARgorithmModel{
         /*
         The Model class for an ARgorithm
         */
@@ -83,7 +83,7 @@ namespace ARgorithmAPI.Models{
         /*
         The Model class for List of ARgorithms
         */
-        public ARgorithm[] items;
+        public ARgorithmModel[] items;
     }
 
     [Serializable]

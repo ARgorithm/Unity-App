@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-using ARgorithmAPI;
-using ARgorithmAPI.Models;
+using ARgorithm.Client;
+using ARgorithm.Models;
 
 public class MainMenu : MonoBehaviour
 {

@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using ARgorithmAPI.Models;
-using ARgorithmAPI.Singleton;
+using ARgorithm.Models;
+using ARgorithm.Singleton;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Converters;
 
-namespace ARgorithmAPI
+namespace ARgorithm.Client
 {
-
     public class APIClient : Singleton<APIClient>
     {
         /*

@@ -5,8 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 
 // import library of ARgorithm
-using ARgorithmAPI;
-using ARgorithmAPI.Models;
+using ARgorithm.Client;
+using ARgorithm.Models;
 using Newtonsoft.Json.Linq;
 
 
@@ -40,7 +40,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
     {
         var NoOfAlgos = 0;
         //Instantiates the UI object(a prefab) dynamically to list the various algos
-        foreach (ARgorithm item in lar.items)
+        foreach (ARgorithmModel item in lar.items)
         {
             var Item = Instantiate(ArgorithmUiObject);
             Item.transform.SetParent(PanelListHolderGameObject);
