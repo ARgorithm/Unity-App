@@ -71,6 +71,5 @@ namespace ARgorithm.Structure
             this.body[index2] = temp;
             // Debug.Log(this.name+" swap");
         }
-
     }
 }

@@ -57,8 +57,8 @@ namespace ARgorithm.Utils
         /*
         StageData contains the output of parsing
         */
-        public Eventlist ev;
-        public ObjectMap obmp;
+        public Eventlist eventList;
+        public ObjectMap objectMap;
         public List<State> states;
         public int size;
     }
@@ -93,8 +93,8 @@ namespace ARgorithm.Utils
             }
 
             StageData sd = new StageData{
-                ev=eventlist,
-                obmp=objectmap,
+                eventList=eventlist,
+                objectMap=objectmap,
                 states=states,
                 size=states.Count
             };
