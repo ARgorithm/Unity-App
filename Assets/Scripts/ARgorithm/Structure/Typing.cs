@@ -1,0 +1,189 @@
+using System;
+using System.Text.RegularExpressions;
+using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
+using UnityEngine;
+using Newtonsoft.Json.Linq;
+using ARgorithm.Models;
+
+namespace ARgorithm.Structure.Typing
+{
+    public class ContentType{
+        private string value;
+        public bool isObjectRef;
+        private string objectRefPattern = @"^\$ARgorithmToolkit\.([A-Za-z]+)\:([0-9]+)$"; 
+
+        public ContentType(JToken jt){
+            Regex rgx = new Regex(this.objectRefPattern);
+            Match match = rgx.Match( (string) jt);
+            if(match.Success){
+                this.value = match.Groups[1].Value;
+                this.isObjectRef = true;
+            }else{
+                this.value = (string) jt;
+                this.isObjectRef = false;
+            }
+        }
+
+        public ContentType(string str){
+            this.value = str;
+            this.isObjectRef = false;
+        }
+    }
+
+    public class NDimensionalArray{
+
+        private int dimensions;
+        private List<int> shape;
+        private List<ContentType> innerCol;
+        
+        public int Dimensions{
+            get {return this.dimensions;}
+        }
+
+        public List<int> Shape{
+            get {return this.shape;}
+        }
+
+        public NDimensionalArray(JArray arr){
+            JArray jarray = arr;
+            this.dimensions = 1;
+            this.shape = new List<int>();
+            int count = jarray.Count;
+            this.shape.Add(count);
+            while(count >= 0){
+                JToken jt = jarray.First;
+                if(jt.Type == JTokenType.Array){
+                    this.dimensions += 1;
+                    jarray = (JArray) jt;
+                    count = jarray.Count;
+                    this.shape.Add(count);
+                }else{
+                    break;
+                }
+            }
+            this.innerCol = new List<ContentType>();
+            foreach (JToken outer in arr)
+            {
+                if(this.dimensions == 1){
+                    this.innerCol.Add(new ContentType(outer));
+                }else{
+                    JArray outerarr = (JArray) outer;
+                    foreach (JToken inner in outerarr)
+                    {
+                        if(this.dimensions == 2){
+                            this.innerCol.Add(new ContentType(inner));
+                        }else{
+                            JArray innerarr = (JArray) inner;
+                            foreach (JToken item in innerarr){
+                                this.innerCol.Add(new ContentType(item));
+                            }
+                        }
+                    }        
+                }
+            }
+
+        }
+
+        public ContentType this[int index]{
+            get{
+                if(this.dimensions == 1){
+                    return this.innerCol[index];
+                }
+                throw new NotSupportedException("Only works if NDimensionalArray.Dimensions == 1");
+            }
+            set{
+                if(this.dimensions == 1){
+                    this.innerCol[index] = value;
+                }else{
+                    throw new NotSupportedException("Only works if NDimensionalArray.Dimensions == 1");
+                }
+                
+            }
+        }
+
+        public ContentType this[int index1, int index2]{
+            get{
+                if(this.dimensions == 2){
+                    int index = this.shape[1] * index1 + index2;
+                    return this.innerCol[index];
+                }
+                throw new NotSupportedException("Only works if NDimensionalArray.Dimensions == 1");
+            }
+            set{
+                if(this.dimensions == 2){
+                    int index = this.shape[1] * index1 + index2;
+                    this.innerCol[index] = value;
+                }else{
+                    throw new NotSupportedException("Only works if NDimensionalArray.Dimensions == 2");
+                }
+            }
+        }
+
+        public ContentType this[int index1,int index2,int index3]{
+            get{
+                if(this.dimensions == 3){
+                    int index = this.shape[1] * this.shape[2] * index1 + this.shape[2] * index2 + index3;
+                    return this.innerCol[index];
+                }
+                throw new NotSupportedException("Only works if NDimensionalArray.Dimensions == 3");
+            }
+            set{
+                if(this.dimensions == 3){
+                    int index = this.shape[1] * this.shape[2] * index1 + this.shape[2] * index2 + index3;
+                    this.innerCol[index] = value;
+                }else{
+                    throw new NotSupportedException("Only works if NDimensionalArray.Dimensions == 3");
+                }
+            }
+        }
+
+        public ContentType this[JToken jt]{
+            get{
+                if(jt.Type == JTokenType.Integer){
+                    int index = (int) jt;
+                    return this[index];
+                }else if(jt.Type == JTokenType.Array){
+                    JArray jarr = (JArray) jt;
+                    if(jarr.Count == 2){
+                        int index1 = (int) jarr[0];
+                        int index2 = (int) jarr[1];
+                        return this[index1,index2];
+                    }
+                    else if(jarr.Count == 3){
+                        int index1 = (int) jarr[0];
+                        int index2 = (int) jarr[1];
+                        int index3 = (int) jarr[2];
+                        return this[index1,index2,index3];
+                    }
+                }
+                throw new NotSupportedException("JToken value not supported");
+            }
+            set{
+                if(jt.Type == JTokenType.Integer){
+                    int index = (int) jt;
+                    this[index] = value;
+                }else if(jt.Type == JTokenType.Array){
+                    JArray jarr = (JArray) jt;
+                    if(jarr.Count == 2){
+                        int index1 = (int) jarr[0];
+                        int index2 = (int) jarr[1];
+                        this[index1,index2] = value;
+                    }
+                    else if(jarr.Count == 3){
+                        int index1 = (int) jarr[0];
+                        int index2 = (int) jarr[1];
+                        int index3 = (int) jarr[2];
+                        this[index1,index2,index3] = value;
+                    }else{
+                        throw new NotSupportedException("JToken value not supported");
+                    }
+                }else{
+                    throw new NotSupportedException("JToken value not supported");
+                }
+                
+            }
+        }
+    }
+}
