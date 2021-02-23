@@ -14,17 +14,14 @@ public class ARTapToPlace : MonoBehaviour
     private bool placementPoseIsValid = false;
     private bool placed = false;
 
-    private GameObject placementIndicator;
+    public GameObject placementIndicator;
     public GameObject cube;
-    private GameObject commentBox;
+    public GameObject CommentBox;
 
 
     void onEnable()
     {
         aRRaycastManager = FindObjectOfType<ARRaycastManager>();
-        placementIndicator = GameObject.FindGameObjectWithTag("PlacementIndicator");
-        Debug.Log(placementIndicator);
-        commentBox = GameObject.FindGameObjectWithTag("CommentBox");
     }
 
     void FixedUpdate()
@@ -57,7 +54,7 @@ public class ARTapToPlace : MonoBehaviour
     private void ChangeComments(string text)
     {
         // called in updates based on EventList contents with "comments" key
-        commentBox.GetComponent<TextMeshProUGUI>().SetText(text); 
+        CommentBox.GetComponent<TextMeshProUGUI>().SetText(text); 
     }
     
     //Dont Change the code below this comment 
