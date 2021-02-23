@@ -48,5 +48,15 @@ namespace ARgorithm.Structure
             */
         }
 
+        public virtual void FromString(string raw){
+            /*
+            To get the contents from the StateLog
+            */
+        }
+
+        public override string ToString(){
+            return "BaseStructure";
+        }
+
     }
 }

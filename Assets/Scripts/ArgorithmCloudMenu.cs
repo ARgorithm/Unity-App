@@ -113,7 +113,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
         // for (int i = 0; i < sd.size; i++)
         // {
         //     State args = sd.states[i];
-        //     sd.ev[i](args);
+        //     sd.eventList[i](args);
         // }
     }
 }

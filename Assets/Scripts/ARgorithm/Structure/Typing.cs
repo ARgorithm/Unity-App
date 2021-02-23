@@ -10,25 +10,34 @@ using ARgorithm.Models;
 namespace ARgorithm.Structure.Typing
 {
     public class ContentType{
-        private string value;
+        public string Value;
         public bool isObjectRef;
         private string objectRefPattern = @"^\$ARgorithmToolkit\.([A-Za-z]+)\:([0-9]+)$"; 
+
+        public ContentType(){}
 
         public ContentType(JToken jt){
             Regex rgx = new Regex(this.objectRefPattern);
             Match match = rgx.Match( (string) jt);
             if(match.Success){
-                this.value = match.Groups[1].Value;
+                this.Value = match.Groups[1].Value;
                 this.isObjectRef = true;
             }else{
-                this.value = (string) jt;
+                this.Value = (string) jt;
                 this.isObjectRef = false;
             }
         }
 
         public ContentType(string str){
-            this.value = str;
-            this.isObjectRef = false;
+            Regex rgx = new Regex(this.objectRefPattern);
+            Match match = rgx.Match(str);
+            if(match.Success){
+                this.Value = match.Groups[1].Value;
+                this.isObjectRef = true;
+            }else{
+                this.Value = str;
+                this.isObjectRef = false;
+            }
         }
     }
 
@@ -36,7 +45,8 @@ namespace ARgorithm.Structure.Typing
 
         private int dimensions;
         private List<int> shape;
-        private List<ContentType> innerCol;
+        
+        public List<ContentType> innerCol;
         
         public int Dimensions{
             get {return this.dimensions;}
@@ -45,6 +55,8 @@ namespace ARgorithm.Structure.Typing
         public List<int> Shape{
             get {return this.shape;}
         }
+
+        public NDimensionalArray(){}
 
         public NDimensionalArray(JArray arr){
             JArray jarray = arr;

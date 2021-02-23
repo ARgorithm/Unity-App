@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ARgorithm.Models;
 using ARgorithm.Structure.Typing;
@@ -13,10 +14,8 @@ namespace ARgorithm.Structure
         /*
         ArrayStructure extends BaseStructure to handle the `ARgorithmToolkit.Array`.
         This will also initialize and control the physical array gameobject that will be shown to user
-
-        Warning:
-            Currently this class is just an empty class to demonstrate the eventlist execution and uniquely handle states
         */
+        
         public string name = "";
         private NDimensionalArray body;
 
@@ -42,6 +41,14 @@ namespace ARgorithm.Structure
                     break;
             }
             return new ARgorithmEvent(this.error);
+        }
+
+        public override string ToString(){
+            return JsonConvert.SerializeObject(this.body);
+        }
+
+        public override void FromString(string raw){
+            this.body = JsonConvert.DeserializeObject<NDimensionalArray>(raw);
         }
 
         public void declare(State state){
