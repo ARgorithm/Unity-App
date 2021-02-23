@@ -19,7 +19,7 @@ public class ARTapToPlace : MonoBehaviour
     private GameObject commentBox;
 
 
-    void Start()
+    void onEnable()
     {
         aRRaycastManager = FindObjectOfType<ARRaycastManager>();
         placementIndicator = GameObject.FindGameObjectWithTag("PlacementIndicator");
