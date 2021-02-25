@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
 // import library of ARgorithm
-using ARgorithm.Utils;
 using ARgorithm.Client;
 using ARgorithm.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 
@@ -15,7 +12,6 @@ public class ArgorithmCloudMenu : MonoBehaviour
 {
     public GameObject ArgorithmUiObject;
     public Transform PanelListHolderGameObject;
-
     // this function is called only when it is enabled or set to active
     void OnEnable()
     {
@@ -102,18 +98,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
         This function should send the states to the ARgorithm Parser which in turn send to ARTapToPlace
         */
         Debug.Log(response.status);
-        
-        /*
-        Info:
-            Below commented code block shows how the StateData can be used to run the events in eventlist
-            This function should ideally be run in ARTapToPlace or in the Stage Gameobject initialization
-        */
-        
-        // StageData sd = Parser.Instance.Parse(response.data);
-        // for (int i = 0; i < sd.size; i++)
-        // {
-        //     State args = sd.states[i];
-        //     sd.eventList[i](args);
-        // }
+        string data = JsonConvert.SerializeObject(response);
+        PlayerPrefs.SetString("StateSet", data);
     }
 }

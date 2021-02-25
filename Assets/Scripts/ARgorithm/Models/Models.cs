@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Newtonsoft.Json.Linq;
-
+using ARgorithm.Structure;
+using System.Linq;
 namespace ARgorithm.Models{
     /*
     The models namespace consists of JSON serializable schemas 
@@ -105,6 +104,52 @@ namespace ARgorithm.Models{
         public string comments;
     }
 
+    public class Eventlist : List<ARgorithmEvent>
+    {
+        /*
+        Eventlist extends a List of ARgorithmEvent
+        we can add any extra functionality we want from Eventlist here
+        */
+    }
+
+    public class ObjectMap : Dictionary<string, BaseStructure>
+    {
+        /*
+        ObjectMap extends a Map mapping between id and BaseStructure
+        */
+        public void Add(string id, string struct_type)
+        {
+            /*
+            Method overloading to add structures to map using the structure type which we derive from the state_type
+            */
+            try
+            {
+                switch (struct_type)
+                {
+                    case "array":
+                        this.Add(id, new ArrayStructure());
+                        break;
+                    default:
+                        this.Add(id, new BaseStructure());
+                        break;
+                }
+            }
+            catch (ArgumentException) { }
+        }
+    }
+    public class StageData
+    {
+        /*
+        StageData contains the output of parsing
+        */
+        public Eventlist eventList;
+        public ObjectMap objectMap;
+        public List<State> states;
+        public int size;
+    }
+
+
+
     [Serializable]
     public class ExecutionResponse{
         /*
@@ -113,6 +158,38 @@ namespace ARgorithm.Models{
         
         public string status;
         public List<State> data;
+
+        public StageData convertStageData()
+        {
+            ObjectMap objectmap = new ObjectMap();
+            Eventlist eventlist = new Eventlist();
+
+            foreach (State state in this.data)
+            {
+                if (state.state_type != "comment")
+                {
+                    JObject state_def = state.state_def;
+                    string id = (string)state_def["id"];
+                    string structType = state.state_type.Split('_').ToList()[0];
+                    objectmap.Add(id, structType);
+                    eventlist.Add(objectmap[id].Operate);
+                }
+                else
+                {
+                    eventlist.Add(BaseStructure.Comment);
+                }
+            }
+
+            StageData sd = new StageData
+            {
+                eventList = eventlist,
+                objectMap = objectmap,
+                states = this.data,
+                size = this.data.Count
+            };
+
+            return sd;
+        }
     }
 
 }

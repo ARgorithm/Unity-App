@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 
 using ARgorithm.Structure;
 using ARgorithm.Models;
-using ARgorithm.Utils;
 /*
 The ARgorithm.Engine namespace will contain all the classes and objects that will be required for physical behaviour of the ARgorithm 
 For example: Stage. 
@@ -18,11 +17,12 @@ namespace ARgorithm.Engine
         // value Generics to be changed to ContentType
         private readonly StageData stageData;
         private int index;
-        
+        private Dictionary<string, Vector3> idToPositionMap;
         public Stage(StageData stageData) 
         {
             this.stageData = stageData;
             this.index = -1;
+            this.idToPositionMap = new Dictionary<string, Vector3>();
         }
 
         public void Next()
