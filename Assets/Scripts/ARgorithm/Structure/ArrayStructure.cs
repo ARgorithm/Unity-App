@@ -48,12 +48,19 @@ namespace ARgorithm.Structure
             
         }
 
-        public override void Undo(string funcType){
+        public override void Undo(State state){
+            string funcType = state.state_type.Split('_').ToList()[1];
             switch (funcType)
             {
                 case "declare":
                     break;
-                case "iter":
+                case "iter":        
+                    JToken index = state.state_def["index"];
+                    JToken lastValue;
+                    if (state.state_def.TryGetValue("last_value",out lastValue))
+                    {
+                        this.body[index] = new ContentType(lastValue);    
+                    }
                     break;
                 case "compare":
                     break;
@@ -73,7 +80,11 @@ namespace ARgorithm.Structure
         }
         private void Iter(State state){
             JToken index = state.state_def["index"];
-            this.body[index] = new ContentType(state.state_def["value"]);
+            JToken value;
+            if (state.state_def.TryGetValue("value",out value))
+            {
+                this.body[index] = new ContentType(value);    
+            }
             // Debug.Log(this.name+" iter");
         }
 

@@ -42,7 +42,7 @@ namespace ARgorithm.Structure
             throw new UnsupportedStateException("BaseStructure methods are not allowed");
         }
 
-        public virtual void Undo(string funcType){
+        public virtual void Undo(State state){
             /*
             The function overwritten by child classes for structure undo operation
             */

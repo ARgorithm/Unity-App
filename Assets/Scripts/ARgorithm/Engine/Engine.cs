@@ -43,9 +43,8 @@ namespace ARgorithm.Engine
             State args = stageData.states[index];
             JObject stateDef = args.state_def;
             string id = (string) stateDef["id"];
-            string funcType = args.state_type.Split('_').ToList()[1];
             BaseStructure currStructure = stageData.objectMap[id];
-            currStructure.Undo(funcType);
+            currStructure.Undo(args);
             index--;
         }
 
