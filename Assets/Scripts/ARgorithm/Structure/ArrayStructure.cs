@@ -51,26 +51,26 @@ namespace ARgorithm.Structure
             this.body = JsonConvert.DeserializeObject<NDimensionalArray>(raw);
         }
 
-        public void declare(State state){
+        public void declare(State state, GameObject gameObject){
             this.rendered = true;
             this.name = (string) state.state_def["variable_name"];
             JArray jt = (JArray) state.state_def["body"];
             this.body = new NDimensionalArray(jt);
             // Debug.Log(this.name+" declared");
         }
-        public void iter(State state){
+        public void iter(State state, GameObject gameObject){
             JToken index = state.state_def["index"];
             this.body[index] = new ContentType(state.state_def["value"]);
             // Debug.Log(this.name+" iter");
         }
 
-        public void compare(State state){
+        public void compare(State state, GameObject gameObject){
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
             // Debug.Log(this.name+" compare");
         }
 
-        public void swap(State state){
+        public void swap(State state , GameObject gameObject){
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
             ContentType temp = this.body[index1];

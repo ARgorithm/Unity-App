@@ -30,7 +30,7 @@ namespace ARgorithm.Engine
             // stageData.eventList -> current index call method
             // stateData.states
             State args = stageData.states[index];
-            stageData.eventList[index](args);
+            // stageData.eventList[index](args);
             if (args.state_type != "comment")
             {
                 JObject state_def = args.state_def;
