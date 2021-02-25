@@ -23,54 +23,67 @@ namespace ARgorithm.Structure
             // constructor
         }
 
-        public override ARgorithmEvent getEvent(string func_type){
+        public override void Operate(State state, GameObject placeholder){
             /*
             override the virtual function of parent class to handle array states
             */
-            switch (func_type)
+            string funcType = state.state_type.Split('_').ToList()[1];
+            switch (funcType)
             {
                 case "declare":
-                    return new ARgorithmEvent(this.declare);
+                    this.Declare(state,placeholder);
+                    break;
                 case "iter":
-                    return new ARgorithmEvent(this.iter);
+                    this.Iter(state);
+                    break;
                 case "compare":
-                    return new ARgorithmEvent(this.compare);
+                    this.Compare(state);
+                    break;
                 case "swap":
-                    return new ARgorithmEvent(this.swap);
+                    this.Swap(state);
+                    break;
+                default:
+                    throw new UnsupportedStateException(String.Format("array_{0} state type is not supported" , funcType));
+            }
+            
+        }
+
+        public override void Undo(string funcType){
+            switch (funcType)
+            {
+                case "declare":
+                    break;
+                case "iter":
+                    break;
+                case "compare":
+                    break;
+                case "swap":
+                    break;
                 default:
                     break;
             }
-            return new ARgorithmEvent(this.error);
         }
 
-        public override string ToString(){
-            return JsonConvert.SerializeObject(this.body);
-        }
-
-        public override void FromString(string raw){
-            this.body = JsonConvert.DeserializeObject<NDimensionalArray>(raw);
-        }
-
-        public void declare(State state, GameObject gameObject){
+        private void Declare(State state, GameObject placeholder){
             this.rendered = true;
             this.name = (string) state.state_def["variable_name"];
             JArray jt = (JArray) state.state_def["body"];
             this.body = new NDimensionalArray(jt);
             // Debug.Log(this.name+" declared");
         }
-        public void iter(State state, GameObject gameObject){
+        private void Iter(State state){
             JToken index = state.state_def["index"];
             this.body[index] = new ContentType(state.state_def["value"]);
             // Debug.Log(this.name+" iter");
         }
 
-        public void compare(State state, GameObject gameObject){
+        private void Compare(State state){
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
             // Debug.Log(this.name+" compare");
         }
 
-        public void swap(State state , GameObject gameObject){
+        private void Swap(State state){
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
             ContentType temp = this.body[index1];

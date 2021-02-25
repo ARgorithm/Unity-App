@@ -82,13 +82,12 @@ namespace ARgorithm.Utils
                 {
                     JObject state_def = state.state_def;
                     string id =(string) state_def["id"];
-                    string struct_type = state.state_type.Split('_').ToList()[0];
-                    string func_type = state.state_type.Split('_').ToList()[1];
-                    objectmap.Add(id,struct_type);
-                    eventlist.Add(objectmap[id].getEvent(func_type));
+                    string structType = state.state_type.Split('_').ToList()[0];
+                    objectmap.Add(id,structType);
+                    eventlist.Add(objectmap[id].Operate);
                 }
                 else{
-                    eventlist.Add(BaseStructure.comment);
+                    eventlist.Add(BaseStructure.Comment);
                 }
             }
 

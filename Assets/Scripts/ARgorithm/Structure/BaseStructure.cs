@@ -17,45 +17,42 @@ namespace ARgorithm.Structure
     need to be animated during ARgorithm rendering process
     */
 
+    public class UnsupportedStateException : System.Exception
+    {
+        public new string Message = "Recieved State which is not supported";
+        public new string HelpLink = "https://github.com/ARgorithm/Unity-App/issues";
+        public UnsupportedStateException() : base() {}
+        
+        public UnsupportedStateException(string message) : base(message) {}
+    }
+
     public class BaseStructure{
         /*
         The BaseStructure class will be the parent class to all data structures.
         Will contain common functions that will be needed for all data structures
         */
 
-        protected bool rendered = false;
+        public bool rendered = false;
         // As the ObjectMap is created. The rendered attribute is used to flag whether this object requires to be rendered yet or not
 
-        public virtual ARgorithmEvent getEvent(string func_type){
+        public virtual void Operate(State state, GameObject gameObject){
             /*
-            virtual function to get the function of Structure object that will be stored in eventlist
-            This function will be overriden by all sub classes
-
-            func_type is the second half of state_type used to select a method of structure
+            This function will get called by Stage and overriden by child classes
             */
-            return new ARgorithmEvent(error);
+            throw new UnsupportedStateException("BaseStructure methods are not allowed");
         }
 
-        protected void error(State state, GameObject gameObject){
+        public virtual void Undo(string funcType){
             /*
-            In case the func_type is not supported in the structure, we return this function to raise an error
+            The function overwritten by child classes for structure undo operation
             */
+            throw new UnsupportedStateException("BaseStructure methods are not allowed");
         }
 
-        public static void comment(State state, GameObject gameObject){
+        public static void Comment(State state, GameObject gameObject){
             /*
             Static method to show comment events
             */
-        }
-
-        public virtual void FromString(string raw){
-            /*
-            To get the contents from the StateLog
-            */
-        }
-
-        public override string ToString(){
-            return "BaseStructure";
         }
 
     }
