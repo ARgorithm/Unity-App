@@ -124,14 +124,17 @@ namespace ARgorithm.Models{
             */
             try
             {
-                switch (struct_type)
+                if (!this.ContainsKey(id))
                 {
-                    case "array":
-                        this.Add(id, new ArrayStructure());
-                        break;
-                    default:
-                        this.Add(id, new BaseStructure());
-                        break;
+                    switch (struct_type)
+                    {
+                        case "array":
+                            this.Add(id, new ArrayStructure());
+                            break;
+                        default:
+                            this.Add(id, new BaseStructure());
+                            break;
+                    }
                 }
             }
             catch (ArgumentException) { }

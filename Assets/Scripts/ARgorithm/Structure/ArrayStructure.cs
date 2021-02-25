@@ -18,11 +18,14 @@ namespace ARgorithm.Structure
         
         public string name = "";
         private NDimensionalArray body;
-
+        private ArrayAnimator animator;
+        private GameObject structure;
         public ArrayStructure(){
             // constructor
+            structure = new GameObject("ArrayStructure");
+            this.animator = structure.AddComponent(typeof(ArrayAnimator)) as ArrayAnimator;
         }
-
+        
         public override void Operate(State state, GameObject placeholder){
             /*
             override the virtual function of parent class to handle array states
@@ -76,6 +79,7 @@ namespace ARgorithm.Structure
             this.name = (string) state.state_def["variable_name"];
             JArray jt = (JArray) state.state_def["body"];
             this.body = new NDimensionalArray(jt);
+            animator.Declare(body, placeholder);
             // Debug.Log(this.name+" declared");
         }
         private void Iter(State state){
@@ -85,13 +89,39 @@ namespace ARgorithm.Structure
             {
                 this.body[index] = new ContentType(value);    
             }
+            List<int> _index1;
+            if (index.Type == JTokenType.Integer)
+            {
+                _index1 = new List<int>();
+                _index1.Add((int)index);
+            }
+            else
+            {
+                _index1 = ((JArray)index).ToObject<List<int>>();
+            }
+            animator.Iter(_index1, this.body[index]);
             // Debug.Log(this.name+" iter");
         }
 
         private void Compare(State state){
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
+            List<int> _index1;
+            List<int> _index2;
+            if (index1.Type == JTokenType.Integer)
+            {
+                _index1 = new List<int>();
+                _index1.Add((int)index1);
+                _index2 = new List<int>();
+                _index2.Add((int)index2);
+            }
+            else
+            {
+                _index1 = ((JArray)index1).ToObject<List<int>>();
+                _index2 = ((JArray)index2).ToObject<List<int>>();
+            }
             // Debug.Log(this.name+" compare");
+            animator.Compare(_index1, _index2);
         }
 
         private void Swap(State state){
@@ -101,6 +131,21 @@ namespace ARgorithm.Structure
             this.body[index1] = this.body[index2];
             this.body[index2] = temp;
             // Debug.Log(this.name+" swap");
+            List<int> _index1;
+            List<int> _index2;
+            if (index1.Type == JTokenType.Integer)
+            {
+                _index1 = new List<int>();
+                _index1.Add((int)index1);
+                _index2 = new List<int>();
+                _index2.Add((int)index2);
+            }
+            else
+            {
+                _index1 = ((JArray)index1).ToObject<List<int>>();
+                _index2 = ((JArray)index2).ToObject<List<int>>();
+            }
+            animator.Swap(_index1, _index2);
         }
     }
 }

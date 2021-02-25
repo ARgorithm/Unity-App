@@ -18,23 +18,27 @@ namespace ARgorithm.Engine
         private readonly StageData stageData;
         private int index;
         private Dictionary<string, Vector3> idToPositionMap;
-        public Stage(StageData stageData) 
+        private GameObject placeHolder;
+        public Stage(StageData stageData, GameObject initialPlaceHolder) 
         {
             this.stageData = stageData;
             this.index = -1;
             this.idToPositionMap = new Dictionary<string, Vector3>();
+            this.placeHolder = initialPlaceHolder;
         }
 
         public void Next()
         {
             index++;
+            if (index >= stageData.size)
+                return;
             State args = stageData.states[index];
+            Debug.Log(args.state_type);
             if (args.state_type != "comment")
             {
                 /*ask user to set position of object if not set already*/
             }
-            // GameObject placeholder
-            // stageData.eventList[index](args , placeholder);
+            stageData.eventList[index](args , this.placeHolder);
             
         }
 

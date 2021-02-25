@@ -6,14 +6,14 @@ using TMPro;
 
 public static class Constants
 {
-    public const int SWAP_TIMER = 2;
-    public const int COMPARE_TIMER = 2;
-    public const int ITER_TIMER = 2;
+    public const float SWAP_TIMER = 0.5f;
+    public const float COMPARE_TIMER = 0.5f;
+    public const float ITER_TIMER = 0.5f;
 }
 
 namespace ARgorithm.Structure 
 {
-    public class ArrayAnimator : MonoBehaviour
+    public class ArrayAnimator:MonoBehaviour
     {
 
         /* Cube Class
@@ -78,14 +78,14 @@ namespace ARgorithm.Structure
         }
 
         //Array of cubeclass holds the Gameobjects
-        private Cube[] arrayOfCubeClass;
+        private Cube[] arrayOfCubes;
 
         /* Declare Function 
          * Function to animate the cubes of the array
          * <INCOMPLETE> 
          * Switch case for ndimensionally arrays
          */
-        void DeclareArray(NDimensionalArray body)
+        public void Declare(NDimensionalArray body, GameObject placeHolder)
         {
             List<int> shape = body.Shape;
             int dimension = body.Dimensions;
@@ -93,15 +93,16 @@ namespace ARgorithm.Structure
             switch (dimension)
             {
                 case 1:
-                    arrayOfCubeClass = new Cube[shape[0]];
-
+                    arrayOfCubes = new Cube[shape[0]];
                     float midpoint = shape[0] - 1.0f;
 
                     for (int i = 0; i < shape[0]; i++)
                     {
-                        arrayOfCubeClass[i] = new Cube(i,body[i]);
-                        arrayOfCubeClass[i].position = new Vector3(i * 2.0F - midpoint, 0.5F, 0);
+                        arrayOfCubes[i] = new Cube(i,body[i]);
+                        arrayOfCubes[i].position = new Vector3(i * 2.0F - midpoint, 0.5F, 0);
+                        arrayOfCubes[i].cube.transform.parent = placeHolder.transform;
                     }
+
                     break;
                 default:
                     break;
@@ -110,21 +111,21 @@ namespace ARgorithm.Structure
 
         /* Swap Function
          */
-        void Swap(List<int> index1,List<int> index2)
+        public void Swap(List<int> index1,List<int> index2)
         {
             /*cubeObjectA and B stores cube class objects picked out using index values provided in the parameters
-             * from variable arrayOfCubeClass which is of class Cube
+             * from variable arrayOfCubes which is of class Cube
              */
             switch (index1.Count)
             {
                 case 1:
-                    Cube cubeObjectA = arrayOfCubeClass[index1[0]];
-                    Cube cubeObjectB = arrayOfCubeClass[index2[0]];
+                    Cube cubeObjectA = arrayOfCubes[index1[0]];
+                    Cube cubeObjectB = arrayOfCubes[index2[0]];
                     /*swapping the index values of the gameobjects
                      */
-                    Cube t = arrayOfCubeClass[index1[0]];
-                    arrayOfCubeClass[index1[0]] = arrayOfCubeClass[index2[0]];
-                    arrayOfCubeClass[index2[0]] = t;
+                    Cube t = arrayOfCubes[index1[0]];
+                    arrayOfCubes[index1[0]] = arrayOfCubes[index2[0]];
+                    arrayOfCubes[index2[0]] = t;
 
                     int indexOfObjectA = cubeObjectA.index;
                     cubeObjectA.index = cubeObjectB.index;
@@ -171,9 +172,9 @@ namespace ARgorithm.Structure
 
         /*Function to highlight one Cube
          */
-        void Iter(List<int> index,ContentType value)
+        public void Iter(List<int> index,ContentType value)
         {
-            Cube cube = arrayOfCubeClass[index[0]];
+            Cube cube = arrayOfCubes[index[0]];
             cube.faceValue = value;
             Material materialToChange;
             Color targetColor = new Color(1, 0, 0, 1);
@@ -210,10 +211,10 @@ namespace ARgorithm.Structure
 
         /*Compare Function that highlights 2 cubes of the given indexes that are being compared
          */
-        void Compare(List<int> index1, List<int> index2)
+        public void Compare(List<int> index1, List<int> index2)
         {
-            Cube cubeObjectA = arrayOfCubeClass[index1[0]];
-            Cube cubeObjectB = arrayOfCubeClass[index2[0]];
+            Cube cubeObjectA = arrayOfCubes[index1[0]];
+            Cube cubeObjectB = arrayOfCubes[index2[0]];
             Material materialToChange, materialToChange2;
             Color targetColor = new Color(1, 0, 0, 1);
 
