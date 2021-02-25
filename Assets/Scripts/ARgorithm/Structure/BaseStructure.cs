@@ -11,7 +11,7 @@ The ARgorithm.Structure stores all the data structure handler classes.
 
 namespace ARgorithm.Structure
 {
-    public delegate void ARgorithmEvent(State state);
+    public delegate void ARgorithmEvent(State state,GameObject gameObject);
     /*
     The ARgorithmEvent delegate defines a function type for all events that would 
     need to be animated during ARgorithm rendering process
@@ -36,13 +36,13 @@ namespace ARgorithm.Structure
             return new ARgorithmEvent(error);
         }
 
-        protected void error(State state){
+        protected void error(State state, GameObject gameObject){
             /*
             In case the func_type is not supported in the structure, we return this function to raise an error
             */
         }
 
-        public static void comment(State state){
+        public static void comment(State state, GameObject gameObject){
             /*
             Static method to show comment events
             */
