@@ -44,6 +44,8 @@ namespace ARgorithm.Engine
 
         public void Prev()
         {
+            if (index <= -1)
+                return;
             State args = stageData.states[index];
             JObject stateDef = args.state_def;
             string id = (string) stateDef["id"];
