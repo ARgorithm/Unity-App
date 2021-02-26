@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-using ARgorithmAPI;
-using ARgorithmAPI.Models;
+using ARgorithm.Client;
+using ARgorithm.Models;
 
 public class MainMenu : MonoBehaviour
 {
@@ -99,6 +99,11 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        if (PlayerPrefs.HasKey("CloudMenuEnabled"))
+        {
+            Mainmenu.SetActive(false);
+            ArgorithmCloudMenu.SetActive(true);
+        }
         //Makes Connect to local server button not interactable
         ConnectToLocalServerButton.interactable = false;
 

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 31e210162dd17ae4d91a84a38663f04d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - placementIndicator: {fileID: 7192618399422254258, guid: 7beacdebc99129140bbd360d8fbe80af,
+      type: 3}
+  - cube: {fileID: 39518484157928013, guid: 40a3700af4216614b8336f12ca407fad, type: 3}
+  - CommentBox: {fileID: 3408954944413619464, guid: 91d4c08ed6f4ba44da57c24298126d7e,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

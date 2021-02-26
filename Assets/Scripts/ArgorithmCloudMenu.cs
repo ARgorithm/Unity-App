@@ -1,20 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
-// import library of ARgorithm
-using ARgorithmAPI;
-using ARgorithmAPI.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using UnityEngine.SceneManagement;
+// import library of ARgorithm
+using ARgorithm.Client;
+using ARgorithm.Models;
 
 public class ArgorithmCloudMenu : MonoBehaviour
 {
+    public GameObject ARgorithmCloudMenu;
+    public GameObject MainMenu;
     public GameObject ArgorithmUiObject;
     public Transform PanelListHolderGameObject;
-
     // this function is called only when it is enabled or set to active
     void OnEnable()
     {
@@ -40,7 +39,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
     {
         var NoOfAlgos = 0;
         //Instantiates the UI object(a prefab) dynamically to list the various algos
-        foreach (ARgorithm item in lar.items)
+        foreach (ARgorithmModel item in lar.items)
         {
             var Item = Instantiate(ArgorithmUiObject);
             Item.transform.SetParent(PanelListHolderGameObject);
@@ -88,18 +87,29 @@ public class ArgorithmCloudMenu : MonoBehaviour
                     argorithmID = argorithmID,
                     parameters = new JObject()
                 },
-                (r) => callback(r)
+                (r) => callback(r,argorithmID)
              )
         );
     }
 
-    void callback(ExecutionResponse response)
+    void callback(ExecutionResponse response,string argorithmID)
     {
         /* 
         After the states are recieved, this function is invoked
-
-        This function should send the states to the ARgorithm Parser which in turn send to ARTapToPlace
+        Starts the ARStage Scene
         */
-        Debug.Log(response.status);
+        string data = JsonConvert.SerializeObject(response);
+        PlayerPrefs.SetString("StateSet", data);
+        PlayerPrefs.SetString("argorithmID", argorithmID);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex+1);
+    }
+
+    public void BackButton()
+    {
+        // Goe back to home menu
+        PlayerPrefs.DeleteKey("CloudMenuEnabled");
+        ARgorithmCloudMenu.SetActive(false);
+        MainMenu.SetActive(true);
     }
 }
