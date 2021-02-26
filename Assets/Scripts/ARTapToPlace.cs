@@ -82,6 +82,7 @@ public class ARTapToPlace : MonoBehaviour
             placed = true;
             GameObject placeHolder = new GameObject("id:" + id);
             placeHolder.transform.position = placementIndicator.transform.position;
+            placeHolder.transform.rotation = placementIndicator.transform.rotation;
             idToPlaceholderMap[id] = placeHolder;
         }
 

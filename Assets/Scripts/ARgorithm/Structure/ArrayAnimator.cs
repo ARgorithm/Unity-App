@@ -101,7 +101,7 @@ namespace ARgorithm.Structure
                 }
                 set
                 {
-                    this.cube.transform.localRotation = value;
+                    this.cube.transform.rotation = value;
                     this._rotation = value;
                 }
             }
@@ -123,32 +123,37 @@ namespace ARgorithm.Structure
             switch (dimension)
             {
                 case 1:
-                    arrayOfCubes = new Cube[shape[0]];
-                    array.transform.parent = placeHolder.transform;
-                    array.transform.position = placeHolder.transform.position;
-                    array.transform.rotation = placeHolder.transform.rotation;
-
-                    Vector3 midpoint;
-                    float distanceX = 0f;
-                    for (int i = 0; i < shape[0]; i++)
-                    {
-                        arrayOfCubes[i] = new Cube(i,body[i]);
-                        arrayOfCubes[i].cube.transform.parent = array.transform;
-                        distanceX = arrayOfCubes[i].scale.x * 2;
-                        // changing local position
-                        arrayOfCubes[i].position = new Vector3(i * distanceX, arrayOfCubes[i].scale.y / 2, 0);
-                        arrayOfCubes[i].rotation = array.transform.rotation;
-
-                    }
-                    midpoint = new Vector3(-distanceX/4, 0, 0);
-                    array.transform.localPosition = midpoint;
-
+                    Array1DDeclare(array, placeHolder, shape, body);
                     break;
                 default:
                     break;
             }
         }
 
+        private void Array1DDeclare(GameObject array,GameObject placeHolder,List<int> shape,NDimensionalArray body)
+        {
+            arrayOfCubes = new Cube[shape[0]];
+            array.transform.parent = placeHolder.transform;
+            array.transform.position = placeHolder.transform.position;
+            array.transform.rotation = placeHolder.transform.rotation;
+
+            for (int i = 0; i < shape[0]; i++)
+            {
+                arrayOfCubes[i] = new Cube(i, body[i]);
+                arrayOfCubes[i].cube.transform.parent = array.transform;
+
+            }
+            //Vector3 midpoint;
+            float distanceX = arrayOfCubes[0].scale.x * 2;
+            float arrayScale = (arrayOfCubes[0].scale.x + distanceX) * shape[0] - (distanceX * 2);
+            float offset = arrayOfCubes[0].scale.x * 0.5f;
+            for (int i = 0; i < shape[0]; i++)
+            {
+                // changing local position
+                arrayOfCubes[i].rotation = array.transform.rotation;
+                arrayOfCubes[i].position = new Vector3(i * distanceX - (arrayScale * 0.5f) + offset, offset, 0);
+            }
+        }
         /* Swap Function
          */
         public void Swap(List<int> index1,List<int> index2)
