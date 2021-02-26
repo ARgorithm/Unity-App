@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARSubsystems;
 using System;
 using TMPro;
+using ARgorithm.Engine;
+using Newtonsoft.Json;
+using ARgorithm.Models;
 public class ARTapToPlace : MonoBehaviour
 {
     //private ARSessionOrigin arOrigin;
@@ -18,8 +21,10 @@ public class ARTapToPlace : MonoBehaviour
     public GameObject cube;
     public GameObject CommentBox;
 
+    private Stage stage;
 
-    void onEnable()
+
+    void Start()
     {
         aRRaycastManager = FindObjectOfType<ARRaycastManager>();
     }
@@ -36,19 +41,30 @@ public class ARTapToPlace : MonoBehaviour
             {
                 PlaceObject();
                 ChangeComments("Tap to place objects on the table");
-                placementIndicator.SetActive(false);
                 placed = true;
             }
         }
-
-        // Step through the algorithm here
     }
 
     private void PlaceObject()
     {
+
         // Change object here with the StateList/EventList
         // Instantiate everything here.
-        Instantiate(cube, PlacementPose.position, PlacementPose.rotation);
+        // Instantiate(cube, PlacementPose.position, PlacementPose.rotation);
+
+        string rawData = PlayerPrefs.GetString("StateSet");
+        ExecutionResponse response = JsonConvert.DeserializeObject<ExecutionResponse>(rawData);
+        Debug.Log(response.data);
+        StageData sd = response.convertStageData();
+        // GameObject indicator = (GameObject)Instantiate(Resources.Load("PlacementIndicator") as GameObject, new Vector3(0, 0, 0), Quaternion.identity);
+        // indicator.SetActive(true);
+        stage = new Stage(sd, placementIndicator);
+    }
+
+    public void Next()
+    {
+        stage.Next();
     }
 
     private void ChangeComments(string text)

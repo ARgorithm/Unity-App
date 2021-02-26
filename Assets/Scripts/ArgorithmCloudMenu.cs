@@ -10,6 +10,9 @@ using Newtonsoft.Json.Linq;
 
 public class ArgorithmCloudMenu : MonoBehaviour
 {
+    public GameObject ARgorithmCloudMenu;
+    public GameObject ARMenu;
+
     public GameObject ArgorithmUiObject;
     public Transform PanelListHolderGameObject;
     // this function is called only when it is enabled or set to active
@@ -100,5 +103,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
         Debug.Log(response.status);
         string data = JsonConvert.SerializeObject(response);
         PlayerPrefs.SetString("StateSet", data);
+        ARgorithmCloudMenu.SetActive(false);
+        ARMenu.SetActive(true);
     }
 }

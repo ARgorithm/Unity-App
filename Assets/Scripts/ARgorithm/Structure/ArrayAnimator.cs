@@ -89,20 +89,21 @@ namespace ARgorithm.Structure
         {
             List<int> shape = body.Shape;
             int dimension = body.Dimensions;
-
+            GameObject array = new GameObject("array");
             switch (dimension)
             {
                 case 1:
                     arrayOfCubes = new Cube[shape[0]];
-                    float midpoint = shape[0] - 1.0f;
 
                     for (int i = 0; i < shape[0]; i++)
                     {
                         arrayOfCubes[i] = new Cube(i,body[i]);
-                        arrayOfCubes[i].position = new Vector3(i * 2.0F - midpoint, 0.5F, 0);
-                        arrayOfCubes[i].cube.transform.parent = placeHolder.transform;
+                        arrayOfCubes[i].position = new Vector3(i * 0.2F, 0, 0);
+                        arrayOfCubes[i].cube.transform.parent = array.transform;
                     }
-
+                    array.transform.parent = placeHolder.transform;
+                    array.transform.position = placeHolder.transform.position;
+                    array.transform.localPosition = new Vector3(0, 0, 0);
                     break;
                 default:
                     break;
@@ -256,6 +257,19 @@ namespace ARgorithm.Structure
             materialToChange2.color = startValue;
 
         }
+        
+        public void Set(List<int> index, ContentType value)
+        {
+            switch (index.Count)
+            {
+                case 1:
+                    arrayOfCubes[index[0]].faceValue = value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
     }
 }
