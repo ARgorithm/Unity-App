@@ -6,13 +6,12 @@ using ARgorithm.Client;
 using ARgorithm.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using UnityEngine.SceneManagement;
 
 public class ArgorithmCloudMenu : MonoBehaviour
 {
     public GameObject ARgorithmCloudMenu;
-    public GameObject ARMenu;
-    public GameObject ARUIHeadingGameObject;
+    public GameObject MainMenu;
     public GameObject ArgorithmUiObject;
     public Transform PanelListHolderGameObject;
     // this function is called only when it is enabled or set to active
@@ -103,13 +102,16 @@ public class ArgorithmCloudMenu : MonoBehaviour
         Debug.Log(response.status);
         string data = JsonConvert.SerializeObject(response);
         PlayerPrefs.SetString("StateSet", data);
-        ARgorithmCloudMenu.SetActive(false);
-        ARMenu.SetActive(true);
-        changeHeading(argorithmID.ToUpper());
+        PlayerPrefs.SetString("argorithmID", argorithmID);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex+1);
         //Debug.Log(PlayerPrefs.GetString("StateSet"));
     }
-    public void changeHeading(string heading)
+
+    public void BackButton()
     {
-        ARUIHeadingGameObject.GetComponent<TextMeshProUGUI>().SetText(heading);
+        PlayerPrefs.DeleteKey("CloudMenuEnabled");
+        ARgorithmCloudMenu.SetActive(false);
+        MainMenu.SetActive(true);
     }
 }

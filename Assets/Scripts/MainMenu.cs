@@ -99,6 +99,11 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        if (PlayerPrefs.HasKey("CloudMenuEnabled"))
+        {
+            Mainmenu.SetActive(false);
+            ArgorithmCloudMenu.SetActive(true);
+        }
         //Makes Connect to local server button not interactable
         ConnectToLocalServerButton.interactable = false;
 
