@@ -56,6 +56,20 @@ namespace ARgorithm.Structure.Typing
             get {return this.shape;}
         }
 
+        public static List<int> ToListIndex(JToken index){
+            List<int> _index;
+            if (index.Type == JTokenType.Integer)
+            {
+                _index = new List<int>();
+                _index.Add((int)index);
+            }
+            else
+            {
+                _index = ((JArray)index).ToObject<List<int>>();
+            }
+            return _index;
+        } 
+
         public NDimensionalArray(){}
 
         public NDimensionalArray(JArray arr){

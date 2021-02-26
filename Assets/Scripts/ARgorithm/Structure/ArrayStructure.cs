@@ -62,12 +62,24 @@ namespace ARgorithm.Structure
                     JToken lastValue;
                     if (state.state_def.TryGetValue("last_value",out lastValue))
                     {
-                        this.body[index] = new ContentType(lastValue);    
+                        this.body[index] = new ContentType(lastValue);
+                        List<int> _index = NDimensionalArray.ToListIndex(index);
+                        this.animator.Set(_index , this.body[index]);
                     }
                     break;
                 case "compare":
                     break;
                 case "swap":
+                    JToken index1 = state.state_def["index1"];
+                    JToken index2 = state.state_def["index2"];
+                    ContentType temp = this.body[index1];
+                    this.body[index1] = this.body[index2];
+                    this.body[index2] = temp;
+                    // Debug.Log(this.name+" swap");
+                    List<int> _index1 = NDimensionalArray.ToListIndex(index1);
+                    List<int> _index2 = NDimensionalArray.ToListIndex(index2);
+                    this.animator.Set(_index1 , this.body[index1]);
+                    this.animator.Set(_index2 , this.body[index2]);
                     break;
                 default:
                     break;
@@ -89,38 +101,16 @@ namespace ARgorithm.Structure
             {
                 this.body[index] = new ContentType(value);    
             }
-            List<int> _index1;
-            if (index.Type == JTokenType.Integer)
-            {
-                _index1 = new List<int>();
-                _index1.Add((int)index);
-            }
-            else
-            {
-                _index1 = ((JArray)index).ToObject<List<int>>();
-            }
-            animator.Iter(_index1, this.body[index]);
+            List<int> _index = NDimensionalArray.ToListIndex(index);
+            animator.Iter(_index, this.body[index]);
             // Debug.Log(this.name+" iter");
         }
 
         private void Compare(State state){
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
-            List<int> _index1;
-            List<int> _index2;
-            if (index1.Type == JTokenType.Integer)
-            {
-                _index1 = new List<int>();
-                _index1.Add((int)index1);
-                _index2 = new List<int>();
-                _index2.Add((int)index2);
-            }
-            else
-            {
-                _index1 = ((JArray)index1).ToObject<List<int>>();
-                _index2 = ((JArray)index2).ToObject<List<int>>();
-            }
-            // Debug.Log(this.name+" compare");
+            List<int> _index1 = NDimensionalArray.ToListIndex(index1);
+            List<int> _index2 = NDimensionalArray.ToListIndex(index2);
             animator.Compare(_index1, _index2);
         }
 
@@ -131,20 +121,8 @@ namespace ARgorithm.Structure
             this.body[index1] = this.body[index2];
             this.body[index2] = temp;
             // Debug.Log(this.name+" swap");
-            List<int> _index1;
-            List<int> _index2;
-            if (index1.Type == JTokenType.Integer)
-            {
-                _index1 = new List<int>();
-                _index1.Add((int)index1);
-                _index2 = new List<int>();
-                _index2.Add((int)index2);
-            }
-            else
-            {
-                _index1 = ((JArray)index1).ToObject<List<int>>();
-                _index2 = ((JArray)index2).ToObject<List<int>>();
-            }
+            List<int> _index1 = NDimensionalArray.ToListIndex(index1);
+            List<int> _index2 = NDimensionalArray.ToListIndex(index2);
             animator.Swap(_index1, _index2);
         }
     }
