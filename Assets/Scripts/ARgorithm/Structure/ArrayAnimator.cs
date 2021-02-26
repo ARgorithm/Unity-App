@@ -71,7 +71,7 @@ namespace ARgorithm.Structure
                 }
                 set
                 {
-                    this.cube.transform.position = value;
+                    this.cube.transform.localPosition = value;
                     this._position = value;
                 }
             }
@@ -94,16 +94,20 @@ namespace ARgorithm.Structure
             {
                 case 1:
                     arrayOfCubes = new Cube[shape[0]];
-
+                    array.transform.parent = placeHolder.transform;
+                    array.transform.position = placeHolder.transform.position;
+                    
+                    Vector3 midpoint;
                     for (int i = 0; i < shape[0]; i++)
                     {
                         arrayOfCubes[i] = new Cube(i,body[i]);
-                        arrayOfCubes[i].position = new Vector3(i * 0.2F, 0, 0);
                         arrayOfCubes[i].cube.transform.parent = array.transform;
+                        // changing local position
+                        arrayOfCubes[i].position = new Vector3(i * 0.2F, 0, 0);
                     }
-                    array.transform.parent = placeHolder.transform;
-                    array.transform.position = placeHolder.transform.position;
-                    array.transform.localPosition = new Vector3(0, 0, 0);
+                    midpoint = new Vector3((shape[0]/2 - 1) * 0.2F, 0, 0);
+                    array.transform.localPosition = new Vector3(0, 0, 0) - midpoint;
+
                     break;
                 default:
                     break;
