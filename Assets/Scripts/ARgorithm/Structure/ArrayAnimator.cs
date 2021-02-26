@@ -26,6 +26,7 @@ namespace ARgorithm.Structure
             private Vector3 _position;
             private Vector3 _scale;
             public GameObject cube;
+            private Quaternion _rotation;
             public int index
             {
                 get
@@ -91,6 +92,19 @@ namespace ARgorithm.Structure
                     this._scale = value;
                 }
             }
+
+            public Quaternion rotation
+            {
+                get
+                {
+                    return _rotation;
+                }
+                set
+                {
+                    this.cube.transform.localRotation = value;
+                    this._rotation = value;
+                }
+            }
         }
 
         //Array of cubeclass holds the Gameobjects
@@ -112,6 +126,7 @@ namespace ARgorithm.Structure
                     arrayOfCubes = new Cube[shape[0]];
                     array.transform.parent = placeHolder.transform;
                     array.transform.position = placeHolder.transform.position;
+                    array.transform.rotation = placeHolder.transform.rotation;
 
                     Vector3 midpoint;
                     float distanceX = 0f;
@@ -122,9 +137,11 @@ namespace ARgorithm.Structure
                         distanceX = arrayOfCubes[i].scale.x * 2;
                         // changing local position
                         arrayOfCubes[i].position = new Vector3(i * distanceX, arrayOfCubes[i].scale.y / 2, 0);
+                        arrayOfCubes[i].rotation = array.transform.rotation;
+
                     }
-                    midpoint = new Vector3((shape[0]/2 - 1) * distanceX, 0, 0);
-                    array.transform.localPosition = new Vector3(0, 0, 0) - midpoint;
+                    midpoint = new Vector3(-distanceX/4, 0, 0);
+                    array.transform.localPosition = midpoint;
 
                     break;
                 default:
