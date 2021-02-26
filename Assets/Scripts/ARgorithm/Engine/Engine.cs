@@ -39,7 +39,8 @@ namespace ARgorithm.Engine
                 /*ask user to set position of object if not set already*/
             }
             string id = (string)args.state_def["id"];
-            if (stageData.objectMap[id].rendered)
+            string funcType = args.state_type.Split('_').ToList()[1];
+            if (stageData.objectMap[id].rendered && funcType=="declare")
             {
                 placeHolder.SetActive(true);
                 return;

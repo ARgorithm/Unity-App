@@ -67,6 +67,11 @@ public class ARTapToPlace : MonoBehaviour
         stage.Next();
     }
 
+    public void Undo()
+    {
+        stage.Prev();
+    }
+
     private void ChangeComments(string text)
     {
         // called in updates based on EventList contents with "comments" key
