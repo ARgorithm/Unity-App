@@ -6,70 +6,118 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARSubsystems;
 using System;
 using TMPro;
-using ARgorithm.Engine;
 using Newtonsoft.Json;
 using ARgorithm.Models;
+using Newtonsoft.Json.Linq;
+
+using ARgorithm.Structure;
+using System.Linq;
+
 public class ARTapToPlace : MonoBehaviour
 {
     //private ARSessionOrigin arOrigin;
     private Pose PlacementPose;
-    private ARRaycastManager aRRaycastManager;
+    private ARRaycastManager ARRayCastManager;
     private bool placementPoseIsValid = false;
-    private bool placed = false;
+    private bool placed = true;
 
     public GameObject placementIndicator;
     public GameObject cube;
     public GameObject CommentBox;
 
-    private Stage stage;
-
+    private StageData stageData;
+    private int index;
+    private Dictionary<string, GameObject> idToPlaceholderMap;
+    
 
     void Start()
     {
-        aRRaycastManager = FindObjectOfType<ARRaycastManager>();
+        ARRayCastManager = FindObjectOfType<ARRaycastManager>();
+        idToPlaceholderMap = new Dictionary<string, GameObject>();
+        string rawData = PlayerPrefs.GetString("StateSet");
+        ExecutionResponse response = JsonConvert.DeserializeObject<ExecutionResponse>(rawData);
+        Debug.Log(response.data);
+        stageData = response.convertStageData();
+        State state = stageData.states[0];
+        string funcType = state.state_type.Split('_').ToList()[1];
+        if (funcType == "declare")
+            placed = false;
     }
 
     void FixedUpdate()
     {
-        if (!placed)
-        {
+        if (!placed) {
             UpdatePlacementPose();
             UpdatePlacementIndicator();
-
-
-            if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-            {
-                PlaceObject();
-                ChangeComments("Tap to place objects on the table");
-                placed = true;
-            }
         }
-    }
-
-    private void PlaceObject()
-    {
-
-        // Change object here with the StateList/EventList
-        // Instantiate everything here.
-        // Instantiate(cube, PlacementPose.position, PlacementPose.rotation);
-
-        string rawData = PlayerPrefs.GetString("StateSet");
-        ExecutionResponse response = JsonConvert.DeserializeObject<ExecutionResponse>(rawData);
-        Debug.Log(response.data);
-        StageData sd = response.convertStageData();
-        // GameObject indicator = (GameObject)Instantiate(Resources.Load("PlacementIndicator") as GameObject, new Vector3(0, 0, 0), Quaternion.identity);
-        // indicator.SetActive(true);
-        stage = new Stage(sd, placementIndicator);
     }
 
     public void Next()
     {
-        stage.Next();
+        index++;
+        if (index >= stageData.size)
+            return;
+        State args = stageData.states[index];
+        Debug.Log(args.state_type);
+        if (args.state_type != "comment")
+        {
+            /*ask user to set position of object if not set already*/
+        }
+        string id = (string)args.state_def["id"];
+        string funcType = args.state_type.Split('_').ToList()[1];
+        if (stageData.objectMap[id].rendered && funcType == "declare")
+        {
+            idToPlaceholderMap[id].SetActive(true);
+            return;
+        }
+        // if not rendered and declare type, start new placement
+        if (!stageData.objectMap[id].rendered && funcType == "declare" && placementPoseIsValid && !placed)
+        {
+            placementIndicator.SetActive(false);
+            placed = true;
+            GameObject placeHolder = new GameObject("id:" + id);
+            placeHolder.transform.position = placementIndicator.transform.position;
+            idToPlaceholderMap[id] = placeHolder;
+        }
+
+        ChangeComments(args.comments);
+        stageData.eventList[index](args, idToPlaceholderMap[id]);
+        if(index+1 < stageData.size)
+        {
+            State nextState = stageData.states[index + 1];
+            string nextFuncType = nextState.state_type.Split('_').ToList()[1];
+            if (nextFuncType == "declare")
+            {
+                placed = false;
+                ChangeComments("Press Play to place new object.");
+            }
+
+        }
     }
 
     public void Undo()
     {
-        stage.Prev();
+        if (index <= -1)
+            return;
+        State args = stageData.states[index];
+        if (args.state_type == "comments")
+        {
+            index--;
+            return;
+        }
+        
+        JObject stateDef = args.state_def;
+        string id = (string)stateDef["id"];
+
+        string funcType = args.state_type.Split('_').ToList()[1];
+        if (funcType == "declare")
+        {
+            idToPlaceholderMap[id].SetActive(false);
+        }
+        
+        BaseStructure currStructure = stageData.objectMap[id];
+        currStructure.Undo(args);
+        index--;
     }
 
     private void ChangeComments(string text)
@@ -96,7 +144,7 @@ public class ARTapToPlace : MonoBehaviour
     {
         var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
         var hits = new List<ARRaycastHit>();
-        aRRaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
+        ARRayCastManager.Raycast(screenCenter, hits, TrackableType.Planes);
 
         placementPoseIsValid = hits.Count > 0;
         if (placementPoseIsValid)
