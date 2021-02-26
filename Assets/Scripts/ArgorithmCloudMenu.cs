@@ -12,7 +12,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
 {
     public GameObject ARgorithmCloudMenu;
     public GameObject ARMenu;
-
+    public GameObject ARUIHeadingGameObject;
     public GameObject ArgorithmUiObject;
     public Transform PanelListHolderGameObject;
     // this function is called only when it is enabled or set to active
@@ -88,12 +88,12 @@ public class ArgorithmCloudMenu : MonoBehaviour
                     argorithmID = argorithmID,
                     parameters = new JObject()
                 },
-                (r) => callback(r)
+                (r) => callback(r,argorithmID)
              )
         );
     }
 
-    void callback(ExecutionResponse response)
+    void callback(ExecutionResponse response,string argorithmID)
     {
         /* 
         After the states are recieved, this function is invoked
@@ -105,5 +105,10 @@ public class ArgorithmCloudMenu : MonoBehaviour
         PlayerPrefs.SetString("StateSet", data);
         ARgorithmCloudMenu.SetActive(false);
         ARMenu.SetActive(true);
+        changeHeading(argorithmID.ToUpper());
+    }
+    public void changeHeading(string heading)
+    {
+        ARUIHeadingGameObject.GetComponent<TextMeshProUGUI>().SetText(heading);
     }
 }

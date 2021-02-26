@@ -32,6 +32,8 @@ public class ARTapToPlace : MonoBehaviour
 
     void Start()
     {
+        index = -1;
+        placementIndicator.SetActive(false);
         ARRayCastManager = FindObjectOfType<ARRaycastManager>();
         idToPlaceholderMap = new Dictionary<string, GameObject>();
         string rawData = PlayerPrefs.GetString("StateSet");
@@ -71,7 +73,7 @@ public class ARTapToPlace : MonoBehaviour
             return;
         }
         // if not rendered and declare type, start new placement
-        if (!stageData.objectMap[id].rendered && funcType == "declare" && placementPoseIsValid && !placed)
+        if (!stageData.objectMap[id].rendered && funcType == "declare" && !placed)
         {
             placementIndicator.SetActive(false);
             placed = true;
@@ -82,7 +84,7 @@ public class ARTapToPlace : MonoBehaviour
 
         ChangeComments(args.comments);
         stageData.eventList[index](args, idToPlaceholderMap[id]);
-        if(index+1 < stageData.size)
+        if(index+1 < stageData.states.Count)
         {
             State nextState = stageData.states[index + 1];
             string nextFuncType = nextState.state_type.Split('_').ToList()[1];
@@ -108,7 +110,7 @@ public class ARTapToPlace : MonoBehaviour
         
         JObject stateDef = args.state_def;
         string id = (string)stateDef["id"];
-
+        ChangeComments(" ");
         string funcType = args.state_type.Split('_').ToList()[1];
         if (funcType == "declare")
         {
@@ -125,11 +127,11 @@ public class ARTapToPlace : MonoBehaviour
         // called in updates based on EventList contents with "comments" key
         CommentBox.GetComponent<TextMeshProUGUI>().SetText(text); 
     }
-    
+
     //Dont Change the code below this comment 
     private void UpdatePlacementIndicator()
     {
-        if (placementPoseIsValid)
+        if (placementPoseIsValid && !placed)
         {
             placementIndicator.SetActive(true);
             placementIndicator.transform.SetPositionAndRotation(PlacementPose.position, PlacementPose.rotation);
@@ -156,4 +158,6 @@ public class ARTapToPlace : MonoBehaviour
             PlacementPose.rotation = Quaternion.LookRotation(cameraBearing);
         }
     }
+
+    
 }
