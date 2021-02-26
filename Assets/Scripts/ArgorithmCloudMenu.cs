@@ -106,6 +106,7 @@ public class ArgorithmCloudMenu : MonoBehaviour
         ARgorithmCloudMenu.SetActive(false);
         ARMenu.SetActive(true);
         changeHeading(argorithmID.ToUpper());
+        //Debug.Log(PlayerPrefs.GetString("StateSet"));
     }
     public void changeHeading(string heading)
     {

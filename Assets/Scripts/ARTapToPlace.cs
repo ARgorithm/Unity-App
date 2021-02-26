@@ -58,7 +58,10 @@ public class ARTapToPlace : MonoBehaviour
     {
         index++;
         if (index >= stageData.size)
+        {
+            index = stageData.size - 1;
             return;
+        }
         State args = stageData.states[index];
         Debug.Log(args.state_type);
         if (args.state_type != "comment")
