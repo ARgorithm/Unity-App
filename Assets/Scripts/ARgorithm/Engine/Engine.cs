@@ -38,14 +38,32 @@ namespace ARgorithm.Engine
             {
                 /*ask user to set position of object if not set already*/
             }
+            string id = (string)args.state_def["id"];
+            if (stageData.objectMap[id].rendered)
+            {
+                placeHolder.SetActive(true);
+                return;
+            }
+                
             stageData.eventList[index](args , this.placeHolder);
             
         }
 
         public void Prev()
         {
+            
             State args = stageData.states[index];
+            if (args.state_type == "comments")
+            {
+                index--;
+                return;
+            }
             JObject stateDef = args.state_def;
+            string funcType = args.state_type.Split('_').ToList()[1];
+            if (funcType == "declare")
+            {
+                placeHolder.SetActive(false);
+            }
             string id = (string) stateDef["id"];
             BaseStructure currStructure = stageData.objectMap[id];
             currStructure.Undo(args);

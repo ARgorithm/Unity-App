@@ -24,6 +24,7 @@ namespace ARgorithm.Structure
             private ContentType _faceValue;
             private int _index;
             private Vector3 _position;
+            private Vector3 _scale;
             public GameObject cube;
             public int index
             {
@@ -59,6 +60,7 @@ namespace ARgorithm.Structure
             public Cube(int index, ContentType value)
             {
                 this.cube = (GameObject)Instantiate(Resources.Load("Cube") as GameObject);
+                this._scale = this.cube.transform.localScale;
                 this.faceValue = value;
                 this.index = index;
             }
@@ -73,6 +75,20 @@ namespace ARgorithm.Structure
                 {
                     this.cube.transform.localPosition = value;
                     this._position = value;
+                }
+            }
+
+            public Vector3 scale
+            {
+                get
+                {
+                    return _scale;
+                }
+
+                set
+                {
+                    this.cube.transform.localScale = value;
+                    this._scale = value;
                 }
             }
         }
@@ -96,16 +112,18 @@ namespace ARgorithm.Structure
                     arrayOfCubes = new Cube[shape[0]];
                     array.transform.parent = placeHolder.transform;
                     array.transform.position = placeHolder.transform.position;
-                    
+
                     Vector3 midpoint;
+                    float distanceX = 0f;
                     for (int i = 0; i < shape[0]; i++)
                     {
                         arrayOfCubes[i] = new Cube(i,body[i]);
                         arrayOfCubes[i].cube.transform.parent = array.transform;
+                        distanceX = arrayOfCubes[i].scale.x * 2;
                         // changing local position
-                        arrayOfCubes[i].position = new Vector3(i * 0.2F, 0, 0);
+                        arrayOfCubes[i].position = new Vector3(i * distanceX, arrayOfCubes[i].scale.y / 2, 0);
                     }
-                    midpoint = new Vector3((shape[0]/2 - 1) * 0.2F, 0, 0);
+                    midpoint = new Vector3((shape[0]/2 - 1) * distanceX, 0, 0);
                     array.transform.localPosition = new Vector3(0, 0, 0) - midpoint;
 
                     break;
