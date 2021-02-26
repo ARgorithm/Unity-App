@@ -1,17 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ARgorithm.Structure.Typing;
 using TMPro;
+
+using ARgorithm.Structure.Typing;
 
 public static class Constants
 {
+    /*
+    Constant values used to control animation
+    */
     public const float SWAP_TIMER = 0.5f;
     public const float COMPARE_TIMER = 0.5f;
     public const float ITER_TIMER = 0.5f;
 }
 
-namespace ARgorithm.Structure 
+namespace ARgorithm.Animations 
 {
     public class ArrayAnimator:MonoBehaviour
     {
@@ -110,13 +114,11 @@ namespace ARgorithm.Structure
         //Array of cubeclass holds the Gameobjects
         private Cube[] arrayOfCubes;
 
-        /* Declare Function 
-         * Function to animate the cubes of the array
-         * <INCOMPLETE> 
-         * Switch case for ndimensionally arrays
-         */
         public void Declare(NDimensionalArray body, GameObject placeHolder)
         {
+            /*
+            Sets Array represented by Cubes at placeholder
+            */
             List<int> shape = body.Shape;
             int dimension = body.Dimensions;
             GameObject array = new GameObject("array");
@@ -132,6 +134,7 @@ namespace ARgorithm.Structure
 
         private void Array1DDeclare(GameObject array,GameObject placeHolder,List<int> shape,NDimensionalArray body)
         {
+            // Handles 1-D arrays
             arrayOfCubes = new Cube[shape[0]];
             array.transform.parent = placeHolder.transform;
             array.transform.position = placeHolder.transform.position;
@@ -158,9 +161,7 @@ namespace ARgorithm.Structure
          */
         public void Swap(List<int> index1,List<int> index2)
         {
-            /*cubeObjectA and B stores cube class objects picked out using index values provided in the parameters
-             * from variable arrayOfCubes which is of class Cube
-             */
+            // Swaps position of 2 Cubes stored at index1 and index2
             switch (index1.Count)
             {
                 case 1:
@@ -215,10 +216,11 @@ namespace ARgorithm.Structure
             objectB.position = startPositionObjectA;
         }
 
-        /*Function to highlight one Cube
-         */
         public void Iter(List<int> index,ContentType value)
         {
+            /*
+            Function to highlight one Cube
+            */
             Cube cube = arrayOfCubes[index[0]];
             cube.faceValue = value;
             Material materialToChange;
@@ -254,10 +256,11 @@ namespace ARgorithm.Structure
             materialToChange.color = startValue;
         }
 
-        /*Compare Function that highlights 2 cubes of the given indexes that are being compared
-         */
         public void Compare(List<int> index1, List<int> index2)
         {
+            /*
+            Compare Function that highlights 2 cubes of the given indexes that are being compared
+            */
             Cube cubeObjectA = arrayOfCubes[index1[0]];
             Cube cubeObjectB = arrayOfCubes[index2[0]];
             Material materialToChange, materialToChange2;
@@ -304,6 +307,7 @@ namespace ARgorithm.Structure
         
         public void Set(List<int> index, ContentType value)
         {
+            // Function to update array without animations
             switch (index.Count)
             {
                 case 1:

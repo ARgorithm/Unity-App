@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using ARgorithm.Models;
+using ARgorithm.Animations;
 using ARgorithm.Structure.Typing;
 
 namespace ARgorithm.Structure
@@ -52,6 +54,7 @@ namespace ARgorithm.Structure
         }
 
         public override void Undo(State state){
+            // Called to undo a change enforced by `state`
             string funcType = state.state_type.Split('_').ToList()[1];
             switch (funcType)
             {
@@ -75,7 +78,6 @@ namespace ARgorithm.Structure
                     ContentType temp = this.body[index1];
                     this.body[index1] = this.body[index2];
                     this.body[index2] = temp;
-                    // Debug.Log(this.name+" swap");
                     List<int> _index1 = NDimensionalArray.ToListIndex(index1);
                     List<int> _index2 = NDimensionalArray.ToListIndex(index2);
                     this.animator.Set(_index1 , this.body[index1]);
@@ -87,14 +89,15 @@ namespace ARgorithm.Structure
         }
 
         private void Declare(State state, GameObject placeholder){
+            // Creates Array GameObjects
             this.rendered = true;
             this.name = (string) state.state_def["variable_name"];
             JArray jt = (JArray) state.state_def["body"];
             this.body = new NDimensionalArray(jt);
             animator.Declare(body, placeholder);
-            // Debug.Log(this.name+" declared");
         }
         private void Iter(State state){
+            // Highlight certain index of Array and might update value
             JToken index = state.state_def["index"];
             JToken value;
             if (state.state_def.TryGetValue("value",out value))
@@ -103,10 +106,10 @@ namespace ARgorithm.Structure
             }
             List<int> _index = NDimensionalArray.ToListIndex(index);
             animator.Iter(_index, this.body[index]);
-            // Debug.Log(this.name+" iter");
         }
 
         private void Compare(State state){
+            // Highlights two values in array to indicate comparision operation
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
             List<int> _index1 = NDimensionalArray.ToListIndex(index1);
@@ -115,12 +118,12 @@ namespace ARgorithm.Structure
         }
 
         private void Swap(State state){
+            // Swaps value stored at indexes
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
             ContentType temp = this.body[index1];
             this.body[index1] = this.body[index2];
             this.body[index2] = temp;
-            // Debug.Log(this.name+" swap");
             List<int> _index1 = NDimensionalArray.ToListIndex(index1);
             List<int> _index2 = NDimensionalArray.ToListIndex(index2);
             animator.Swap(_index1, _index2);

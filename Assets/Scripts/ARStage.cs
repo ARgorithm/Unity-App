@@ -7,11 +7,12 @@ using UnityEngine.XR.ARSubsystems;
 using System;
 using TMPro;
 using Newtonsoft.Json;
-using ARgorithm.Models;
 using Newtonsoft.Json.Linq;
 using UnityEngine.SceneManagement;
-using ARgorithm.Structure;
 using System.Linq;
+
+using ARgorithm.Structure;
+using ARgorithm.Models;
 
 public class ARStage : MonoBehaviour
 {
@@ -33,20 +34,25 @@ public class ARStage : MonoBehaviour
 
     void Start()
     {
+        // Sets Header of UI
         string argorithmID = PlayerPrefs.GetString("argorithmID");
         ARgorithmHeading.GetComponent<TextMeshProUGUI>().SetText(argorithmID);
+        
+        // Initialises the metadata that will be used to control the animations
         index = -1;
         placementIndicator.SetActive(false);
         ARRayCastManager = FindObjectOfType<ARRaycastManager>();
         idToPlaceholderMap = new Dictionary<string, GameObject>();
         string rawData = PlayerPrefs.GetString("StateSet");
         ExecutionResponse response = JsonConvert.DeserializeObject<ExecutionResponse>(rawData);
-        Debug.Log(response.data);
         stageData = response.convertStageData();
+
+        // If first state is a `declare` state then we activate placement indicator
         State state = stageData.states[0];
         string funcType = state.state_type.Split('_').ToList()[1];
         if (funcType == "declare")
             placed = false;
+            ChangeComments("Press Play to place new object. Please place objects properly spaced");
     }
 
     void FixedUpdate()
@@ -107,10 +113,12 @@ public class ARStage : MonoBehaviour
             return;
         }
         State args = stageData.states[index];
-        Debug.Log(args.state_type);
         if (args.state_type != "comment")
         {
-            /*ask user to set position of object if not set already*/
+            /* 
+            Should remove this and alter a code a bit because this is logically wrong
+            But It works :)
+            */
         }
         string id = (string)args.state_def["id"];
         string funcType = args.state_type.Split('_').ToList()[1];
@@ -119,9 +127,9 @@ public class ARStage : MonoBehaviour
             idToPlaceholderMap[id].SetActive(true);
             return;
         }
-        // if not rendered and declare type, start new placement
         if (!stageData.objectMap[id].rendered && funcType == "declare" && !placed)
         {
+            /*ask user to set position of object if not set already*/
             placementIndicator.SetActive(false);
             placed = true;
             GameObject placeHolder = new GameObject("id:" + id);
@@ -139,13 +147,14 @@ public class ARStage : MonoBehaviour
             if (nextFuncType == "declare")
             {
                 placed = false;
-                ChangeComments("Press Play to place new object.");
+                ChangeComments("Press Play to place new object. Please place objects properly spaced");
             }
 
         }
     }
     public void Undo()
     {
+        // Called the structure Undo method to reset values without animation
         if (index <= -1)
             return;
         State args = stageData.states[index];
@@ -170,6 +179,7 @@ public class ARStage : MonoBehaviour
     }
     public void BackButton()
     {
+        // Exit Scene
         PlayerPrefs.SetInt("CloudMenuEnabled", 1);
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex - 1);
@@ -177,6 +187,7 @@ public class ARStage : MonoBehaviour
 
     public void Reset()
     {
+        // Reset Scene
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex);
     }

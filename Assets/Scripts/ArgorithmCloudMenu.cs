@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-// import library of ARgorithm
-using ARgorithm.Client;
-using ARgorithm.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine.SceneManagement;
+// import library of ARgorithm
+using ARgorithm.Client;
+using ARgorithm.Models;
 
 public class ArgorithmCloudMenu : MonoBehaviour
 {
@@ -96,20 +96,18 @@ public class ArgorithmCloudMenu : MonoBehaviour
     {
         /* 
         After the states are recieved, this function is invoked
-
-        This function should send the states to the ARgorithm Parser which in turn send to ARTapToPlace
+        Starts the ARStage Scene
         */
-        Debug.Log(response.status);
         string data = JsonConvert.SerializeObject(response);
         PlayerPrefs.SetString("StateSet", data);
         PlayerPrefs.SetString("argorithmID", argorithmID);
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex+1);
-        //Debug.Log(PlayerPrefs.GetString("StateSet"));
     }
 
     public void BackButton()
     {
+        // Goe back to home menu
         PlayerPrefs.DeleteKey("CloudMenuEnabled");
         ARgorithmCloudMenu.SetActive(false);
         MainMenu.SetActive(true);

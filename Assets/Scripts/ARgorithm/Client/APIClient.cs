@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using ARgorithm.Models;
-using ARgorithm.Singleton;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Converters;
+
+using ARgorithm.Models;
+using ARgorithm.Singleton;
 
 namespace ARgorithm.Client
 {

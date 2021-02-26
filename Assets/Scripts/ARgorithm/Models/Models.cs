@@ -164,6 +164,7 @@ namespace ARgorithm.Models{
 
         public StageData convertStageData()
         {
+            // Converts ExecutionResponse into stageData
             ObjectMap objectmap = new ObjectMap();
             Eventlist eventlist = new Eventlist();
 

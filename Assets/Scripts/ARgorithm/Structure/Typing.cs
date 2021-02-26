@@ -5,11 +5,19 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+
 using ARgorithm.Models;
 
 namespace ARgorithm.Structure.Typing
 {
+    /*
+    The ARgorithm.Structure.Typing Namespace deals with the naming of ARgorithm Objects
+    */
     public class ContentType{
+        /*
+        Sometimes strings that we parse from JTokens can be object references when it comes to nested structures
+        ContentType allows us to handle both cases with one class
+        */
         public string Value;
         public bool isObjectRef;
         private string objectRefPattern = @"^\$ARgorithmToolkit\.([A-Za-z]+)\:([0-9]+)$"; 
@@ -42,7 +50,10 @@ namespace ARgorithm.Structure.Typing
     }
 
     public class NDimensionalArray{
-
+        /*
+        The Arrays parsed from JSON response doesnt have fixed dimensions that can prove to be bothersome
+        NDimensionalArray handles arrays of all dimensions by reshaping all of them as a 1-D list
+        */
         private int dimensions;
         private List<int> shape;
         
