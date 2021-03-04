@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using UnityEngine.SceneManagement;
 // import library of ARgorithm
 using ARgorithm.Client;
 using ARgorithm.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEngine.SceneManagement;
 
 public class ArgorithmCloudMenu : MonoBehaviour
 {
     public GameObject ARgorithmCloudMenu;
     public GameObject MainMenu;
     public GameObject ArgorithmUiObject;
+    public GameObject ParameterMenu;
     public Transform PanelListHolderGameObject;
     // this function is called only when it is enabled or set to active
     void OnEnable()
@@ -53,7 +54,12 @@ public class ArgorithmCloudMenu : MonoBehaviour
             Button ExecuteButton = Item.transform.GetChild(4).GetComponent<Button>();
             ExecuteButton.onClick.AddListener(() =>
             {
-                run(item.argorithmID);
+                
+                PlayerPrefs.SetString("argorithmID", item.argorithmID);
+                JObject jb =  item.parameters;
+                ParameterMenu.GetComponent<ParametersMenu>().parametersInfo = jb;
+                ARgorithmCloudMenu.SetActive(false);
+                ParameterMenu.SetActive(true);
             });
 
             NoOfAlgos += 1;
@@ -75,41 +81,11 @@ public class ArgorithmCloudMenu : MonoBehaviour
             }
         }
     }
-
-    public void run(string argorithmID)
-    {
-        // This sends an execution request to server and gets the states
-        
-        StartCoroutine(
-            APIClient.Instance.run(
-                new ExecutionRequest
-                {
-                    argorithmID = argorithmID,
-                    parameters = new JObject()
-                },
-                (r) => callback(r,argorithmID)
-             )
-        );
-    }
-
-    void callback(ExecutionResponse response,string argorithmID)
-    {
-        /* 
-        After the states are recieved, this function is invoked
-        Starts the ARStage Scene
-        */
-        string data = JsonConvert.SerializeObject(response);
-        PlayerPrefs.SetString("StateSet", data);
-        PlayerPrefs.SetString("argorithmID", argorithmID);
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex+1);
-    }
-
     public void BackButton()
     {
-        // Goe back to home menu
         PlayerPrefs.DeleteKey("CloudMenuEnabled");
         ARgorithmCloudMenu.SetActive(false);
         MainMenu.SetActive(true);
     }
+
 }
