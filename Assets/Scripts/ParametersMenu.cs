@@ -20,10 +20,12 @@ public class ParametersMenu : MonoBehaviour
     public Button SubmitParametersButton;
     public JObject parametersInfo;
 
-    private Dictionary<string, Dictionary<string, JToken>> objectParameter ;
-
+    private Dictionary<string, Dictionary<string, JToken>> objectParameter;
+    private Dictionary<string, JToken> customParameters;
     void OnEnable()
     {
+        customParameters = new Dictionary<string, JToken>();
+
         foreach (Transform child in VariablesGameObject.transform)
         {
             GameObject.Destroy(child.gameObject);
@@ -33,10 +35,23 @@ public class ParametersMenu : MonoBehaviour
          * It takes some time to do so. So a timer is set withn the Coroutine for
          * the jobject to load all the values
         */
-        Debug.Log(parametersInfo);
         SettingUpParametersInfo();
     }
 
+    private void FixedUpdate()
+    {
+        List<string> variables = new List<string>(objectParameter.Keys);
+        foreach (var variable in variables)
+        {
+            if (!customParameters.ContainsKey(variable))
+            {
+                SubmitParametersButton.interactable = false;
+                break;
+            }
+            SubmitParametersButton.interactable = true;
+        }
+        
+    }
     private void SettingUpParametersInfo()
     {
         this.objectParameter = new Dictionary<string, Dictionary<string, JToken>>();
@@ -56,13 +71,13 @@ public class ParametersMenu : MonoBehaviour
             switch (type)
             {
                 case "INT":
-                    SetupIntFloatParameters<int>(variable, description);
+                    SetupVariableParameters<int>(variable, description);
                     break;
                 case "FLOAT":
-                    SetupIntFloatParameters<float>(variable, description);
+                    SetupVariableParameters<float>(variable, description);
                     break;
                 case "STRING":
-                    SetupStringParameters(variable, description);
+                    SetupVariableParameters<string>(variable, description);
                     break;
                 case "ARRAY":
                     string itemType = objectParameter[variable]["item-type"].ToString();
@@ -76,105 +91,99 @@ public class ParametersMenu : MonoBehaviour
                         throw new ARgorithmException("Invalid item type expected");
                     break;
                 case "MATRIX":
+                    string matrixItemType = objectParameter[variable]["item-type"].ToString();
+                    if (matrixItemType == "INT")
+                        SetupMatrixParameters<int>(variable, description);
                     break;
             }
         }
     }
-    private void SetupIntFloatParameters<T>(string variable,string description)
+    private void SetupVariableParameters<T>(string variable,string description)
     {
+        Dictionary<string, int> children = new Dictionary<string, int>(){
+            {"VariableName",0 },
+            {"Label",1 },
+            {"StringInputField",2 },
+            {"Description",3 },
+            {"AlertBox",4}
+        };
         /*
-        * Instantiates Int Parameter Prefab
+        * Instantiates SingleParameterPrefab
         */
-        GameObject intParameter = Instantiate(Resources.Load("IntParameterPrefab") as GameObject);
-        intParameter.transform.parent = VariablesGameObject.transform;
-        intParameter.transform.localScale = new Vector3(1, 1, 1);
+        GameObject variableParameter = Instantiate(Resources.Load("SingleParameterPrefab") as GameObject);
+        variableParameter.transform.parent = VariablesGameObject.transform;
+        variableParameter.transform.localScale = new Vector3(1, 1, 1);
         /*
-        * Child holds the text component within Int Parameter Prefab and sets variable name
+        * Child holds the text component within SingleParameterPrefab and sets variable name
         */
-        var child = intParameter.transform.GetChild(0).gameObject;
+        var child = variableParameter.transform.GetChild(children["VariableName"]).gameObject;
         child.transform.GetComponent<TextMeshProUGUI>().SetText(variable);
         /*
-        * intInputField holds the intinputfield component within int Parameter Prefab
+        * Adding Labels before inputs
+        */
+        string type = typeof(T).Name;
+        if (type == "Int32" || type == "Int64" || type == "Int16")
+        {
+            type = "INTERGER";
+        }
+        else if(type == "Float64" || type == "single" || type == "double" || type == "decimal" || type == "Single" || type == "Double" || type == "Decimal")
+        {
+            type = "FLOAT";
+        }
+        else if(type == "string" || type == "String")
+        {
+            type = "STRING";
+        }
+        child = variableParameter.transform.GetChild(children["Label"]).gameObject;
+        child.transform.GetComponent<TextMeshProUGUI>().SetText(string.Format("Enter the Value (of type {0}):",type));
+        /*
+        * Child holds the description text component and sets description
+        */
+        child = variableParameter.transform.GetChild(children["Description"]).gameObject;
+        child.transform.GetComponent<TextMeshProUGUI>().SetText(description);
+        /*
+        * SingleInputField holds the variableinputfield component within SingleParameter Prefab
         * and onEdit completion stores its value
         */
         T value;
-        InputField valueInputField = intParameter.transform.GetChild(1).gameObject.GetComponent<InputField>();
-        valueInputField.onEndEdit.AddListener(delegate
+        InputField valueInputField = variableParameter.transform.GetChild(children["StringInputField"]).gameObject.GetComponent<InputField>();
+        valueInputField.onValueChanged.AddListener(delegate
         {
             try
             {
                 value = Parse<T>(valueInputField.text);
-                child = intParameter.transform.GetChild(3).gameObject;
+                child = variableParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText("");
+                customParameters[variable] = JToken.FromObject(value);
             }
             catch (ARgorithmException e)
             {
-                child = intParameter.transform.GetChild(3).gameObject;
+                child = variableParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText(e.Message);
+                customParameters.Remove(variable);
             }
             catch
             {
-                child = intParameter.transform.GetChild(3).gameObject;
+                child = variableParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText("Error in Input");
-            }
-            
-        });
-        /*
-        * Child holds the description text component and sets description
-        */
-        child = intParameter.transform.GetChild(2).gameObject;
-        child.transform.GetComponent<TextMeshProUGUI>().SetText(description);
-    }
-    private void SetupStringParameters(string variable, string description)
-    {
-        /*
-        * Instantiates Int Parameter Prefab
-        */
-        GameObject stringParameter = Instantiate(Resources.Load("StringParameterPrefab") as GameObject);
-        stringParameter.transform.parent = VariablesGameObject.transform;
-        stringParameter.transform.localScale = new Vector3(1, 1, 1);
-        /*
-        * Child holds the text component within Int Parameter Prefab and sets variable name
-        */
-        var child = stringParameter.transform.GetChild(0).gameObject;
-        child.transform.GetComponent<TextMeshProUGUI>().SetText(variable);
-        /*
-        * intInputField holds the intinputfield component within int Parameter Prefab
-        * and onEdit completion stores its value
-        */
-        string value = "";
-        InputField valueInputField = stringParameter.transform.GetChild(1).gameObject.GetComponent<InputField>();
-        valueInputField.onEndEdit.AddListener(delegate
-        {
-            try
-            {
-                value = valueInputField.text;
-                child = stringParameter.transform.GetChild(3).gameObject;
-                child.transform.GetComponent<TextMeshProUGUI>().SetText("");
-                Debug.Log(value.ToString());
-
-            }
-            catch (ARgorithmException e)
-            {
-                child = stringParameter.transform.GetChild(3).gameObject;
-                child.transform.GetComponent<TextMeshProUGUI>().SetText(e.Message);
-            }
-            catch
-            {
-                child = stringParameter.transform.GetChild(3).gameObject;
-                child.transform.GetComponent<TextMeshProUGUI>().SetText("Error in Input");
+                customParameters.Remove(variable);
             }
 
         });
-        /*
-        * Child holds the description text component and sets description
-        */
-        child = stringParameter.transform.GetChild(2).gameObject;
-        child.transform.GetComponent<TextMeshProUGUI>().SetText(description);
+        
     }
 
     private void SetupArrayParameters<T>(string variable,string description)
     {
+        Dictionary<string, int> children = new Dictionary<string, int>(){
+            {"VariableName",0 },
+            {"ArraySizeLabel",1 },
+            {"ArraySizeInputField",2 },
+            {"Label",3 },
+            {"ArrayElementInputField",4},
+            {"Description",5 },
+            {"AlertBox",6 }
+        };
         /*
         * Instantiates Array Parameter Prefab
         */
@@ -184,20 +193,38 @@ public class ParametersMenu : MonoBehaviour
         /*
         * Child holds the text component within Array Parameter Prefab and sets variable name
         */
-        var child = arrayParameter.transform.GetChild(0).gameObject;
+        var child = arrayParameter.transform.GetChild(children["VariableName"]).gameObject;
         child.transform.GetComponent<TextMeshProUGUI>().SetText(variable);
         /*
-        * child holds the element type component within Array Parameter Prefab and sets the Element type
+        * Change Label component within Array Parameter Prefab and sets the Label
         */
-        child = arrayParameter.transform.GetChild(2).gameObject;
-        child.transform.GetComponent<TextMeshProUGUI>().SetText(objectParameter[variable]["item-type"].ToString().ToLower()+" type");
+        string type = typeof(T).Name;
+        if (type == "Int32" || type == "Int64" || type == "Int16")
+        {
+            type = "INTERGER";
+        }
+        else if (type == "Float64" || type == "single" || type == "double" || type == "decimal" || type == "Single" || type == "Double" || type == "Decimal")
+        {
+            type = "FLOAT";
+        }
+        else if (type == "string" || type == "String")
+        {
+            type = "STRING";
+        }
+        child = arrayParameter.transform.GetChild(children["Label"]).gameObject;
+        child.transform.GetComponent<TextMeshProUGUI>().SetText(string.Format("Enter the elements (of type {0}):",type));
+        /*
+        * Child holds the description text component and sets description
+        */
+        child = arrayParameter.transform.GetChild(children["Description"]).gameObject;
+        child.transform.GetComponent<TextMeshProUGUI>().SetText(description);
         /*
         * sizeInputField holds the array size inputfield component within Array Parameter Prefab
         * and onEdit completion store in size variable
         */
-        InputField sizeInputField = arrayParameter.transform.GetChild(1).gameObject.GetComponent<InputField>();
+        InputField sizeInputField = arrayParameter.transform.GetChild(children["ArraySizeInputField"]).gameObject.GetComponent<InputField>();
         int arraySize = 0;
-        sizeInputField.onEndEdit.AddListener(delegate
+        sizeInputField.onValueChanged.AddListener(delegate
         {
             try
             {
@@ -206,29 +233,31 @@ public class ParametersMenu : MonoBehaviour
                 {
                     throw new ARgorithmException("Size cannot be lesser than or equal to Zero");
                 }
-                child = arrayParameter.transform.GetChild(4).gameObject;
+                child = arrayParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText("");
             }
             catch(ARgorithmException e)
             {
-                child = arrayParameter.transform.GetChild(4).gameObject;
+                child = arrayParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText(e.Message);
+                customParameters.Remove(variable);
             }
             catch 
             {
-                child = arrayParameter.transform.GetChild(4).gameObject;
+                child = arrayParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText("Invalid input in size field");
+                customParameters.Remove(variable);
             }
         });
       
         /*
         * arrayElementsInputField holds the array elementsinputfield component within Array Parameter Prefab
-        * and onEdit completion store in arrayElemets variable
+        * and onEdit completion store in arrayElements variable
         */
         T[] arrayElements = new T[arraySize];
 
-        InputField arrayElementsInputField = arrayParameter.transform.GetChild(3).gameObject.GetComponent<InputField>();
-        arrayElementsInputField.onEndEdit.AddListener(delegate
+        InputField arrayElementsInputField = arrayParameter.transform.GetChild(children["ArrayElementInputField"]).gameObject.GetComponent<InputField>();
+        arrayElementsInputField.onValueChanged.AddListener(delegate
         {
             try
             {
@@ -238,26 +267,167 @@ public class ParametersMenu : MonoBehaviour
                     throw new ARgorithmException("Array size doesn't match with input size");
                 }
                 arrayElements = arrayInputs;
+                child = arrayParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText("");
+                customParameters[variable] = JArray.FromObject(arrayElements);
+            }
+            catch (ARgorithmException e)
+            {
+                child = arrayParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText(e.Message);
+                customParameters.Remove(variable);
+            }
+            catch
+            {
+                child = arrayParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText("Input Error in Array Elements");
+                customParameters.Remove(variable);
+            }
+        });
+    }
+
+    private void SetupMatrixParameters<T>(string variable,string description)
+    {
+        Dictionary<string, int> children = new Dictionary<string, int>(){
+            {"VariableName",0 },
+            {"RowInputField",1 },
+            {"ColumnInputField",2 },
+            {"Label",3 },
+            {"MatrixElementInput", 4 },
+            {"Description",5 },
+            {"AlertBox",6 }
+        };
+        /*
+        * Instantiates Matrix Parameter Prefab
+        */
+        GameObject matrixParameter = Instantiate(Resources.Load("MatrixParameterPrefab") as GameObject);
+        matrixParameter.transform.parent = VariablesGameObject.transform;
+        matrixParameter.transform.localScale = new Vector3(1, 1, 1);
+        /*
+        * Child holds the text component within Matrix Parameter Prefab and sets variable name
+        */
+        var child = matrixParameter.transform.GetChild(children["VariableName"]).gameObject;
+        child.transform.GetComponent<TextMeshProUGUI>().SetText(variable+"\n"+"Enter the row and column sizes (of type INTEGER)");
+        /*
+        * Child holds the description text component and sets description
+        */
+        child = matrixParameter.transform.GetChild(children["Description"]).gameObject;
+        child.transform.GetComponent<TextMeshProUGUI>().SetText(description);
+        /*
+        * child holds the Label component within Matrix Parameter Prefab and sets the Label
+        */
+        string type = typeof(T).Name;
+        if (type == "Int32" || type == "Int64" || type == "Int16")
+        {
+            type = "INTERGER";
+        }
+        else if (type == "Float64" || type == "single" || type == "double" || type == "decimal" || type == "Single" || type == "Double" || type == "Decimal")
+        {
+            type = "FLOAT";
+        }
+        else if (type == "string" || type == "String")
+        {
+            type = "STRING";
+        }
+        child = matrixParameter.transform.GetChild(children["Label"]).gameObject;
+        child.transform.GetComponent<TextMeshProUGUI>().SetText(string.Format("Enter the Elements (of type {0}):", type));
+        /*
+        * rowInputField holds the row size inputfield component within Matrix Parameter Prefab
+        * and onEdit completion store in size 
+        */
+        InputField rowInputField = matrixParameter.transform.GetChild(children["RowInputField"]).gameObject.GetComponent<InputField>();
+        int rowSize = 0;
+        rowInputField.onValueChanged.AddListener(delegate
+        {
+            try
+            {
+                rowSize = int.Parse(rowInputField.text);
+                if (rowSize <= 0)
+                {
+                    throw new ARgorithmException("Size of row cannot be lesser than or equal to Zero");
+                }
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText("");
             }
             catch(ARgorithmException e)
             {
-                child = arrayParameter.transform.GetChild(5).gameObject;
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
                 child.transform.GetComponent<TextMeshProUGUI>().SetText(e.Message);
+                customParameters.Remove(variable);
             }
             catch
             {
-                child = arrayParameter.transform.GetChild(5).gameObject;
-                child.transform.GetComponent<TextMeshProUGUI>().SetText("Input Error in Array Elements");
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText("Row size has to be an INTEGER");
+                customParameters.Remove(variable);
             }
         });
         /*
-        * Child holds the description text component and sets description
+        * columnInputField holds the col size inputfield component within Matrix Parameter Prefab
+        * and onEdit completion store in size
         */
-        child = arrayParameter.transform.GetChild(4).gameObject;
-        child.transform.GetComponent<TextMeshProUGUI>().SetText(description);
+        InputField colInputField = matrixParameter.transform.GetChild(children["ColumnInputField"]).gameObject.GetComponent<InputField>();
+        int colSize = 0;
+        rowInputField.onValueChanged.AddListener(delegate
+        {
+            try
+            {
+                colSize = int.Parse(colInputField.text);
+                if (colSize <= 0)
+                {
+                    throw new ARgorithmException("Size of column cannot be lesser than or equal to Zero");
+                }
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText("");
+            }
+            catch (ARgorithmException e)
+            {
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText(e.Message);
+                customParameters.Remove(variable);
+            }
+            catch
+            {
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText("Column size has to be an INTEGER");
+                customParameters.Remove(variable);
+            }
+        });
+        /*
+        * matrixElementsInputField holds the matrix elementsinputfield component within MAtrix Parameter Prefab
+        * and onEdit completion store in matrixElements variable
+        */
+        T[] matrixElements = new T[rowSize*colSize];
+        InputField matrixElementsInputField = matrixParameter.transform.GetChild(children["MatrixElementInput"]).gameObject.GetComponent<InputField>();
+        matrixElementsInputField.onValueChanged.AddListener(delegate
+        {
+            try
+            {
+                T[] matrixInputs = System.Array.ConvertAll(matrixElementsInputField.text.Split(' '), Parse<T>);
+                if(matrixInputs.Length != (rowSize * colSize))
+                {
+                    throw new ARgorithmException("Input Elements size doesn't match matrix size provided");
+                }
+                matrixElements = matrixInputs;
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText("");
+                customParameters[variable] = JArray.FromObject(matrixElements);
+            }
+            catch (ARgorithmException e)
+            {
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText(e.Message);
+                customParameters.Remove(variable);
+            }
+            catch
+            {
+                child = matrixParameter.transform.GetChild(children["AlertBox"]).gameObject;
+                child.transform.GetComponent<TextMeshProUGUI>().SetText("Input Error in Matrix Elements");
+                customParameters.Remove(variable);
+            }
+        });
+        
     }
-
     void OnDisable()
     {
         Debug.Log("Parameters Menu diasbled");
@@ -285,19 +455,21 @@ public class ParametersMenu : MonoBehaviour
     {
         // This sends an execution request to server and gets the states
         string argorithmID = PlayerPrefs.GetString("argorithmID");
+        string parametersInStringFormat = JsonConvert.SerializeObject(customParameters, Formatting.Indented);
+        JObject parameters = JObject.Parse(parametersInStringFormat);
+        Debug.Log(parameters);
         
-        /*
-         StartCoroutine(
+        StartCoroutine(
             APIClient.Instance.run(
                 new ExecutionRequest
                 {
                     argorithmID = argorithmID,
-                    parameters = new JObject()
+                    parameters = parameters
                 },
                 (r) => callback(r, argorithmID)
              )
         );
-        */
+        
     }
     public void RunDefault()
     {
@@ -322,7 +494,7 @@ public class ParametersMenu : MonoBehaviour
         /* 
         After the states are recieved, this function is invoked
 
-        This function should send the states to the ARgorithm Parser which in turn send to ARTapToPlace
+        This function should send the states to the ARgorithm Parser which in turn send to ARStage
         */
         Debug.Log(response.status);
         string data = JsonConvert.SerializeObject(response);
