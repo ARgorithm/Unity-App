@@ -124,7 +124,7 @@ public class ParametersMenu : MonoBehaviour
         string type = typeof(T).Name;
         if (type == "Int32" || type == "Int64" || type == "Int16")
         {
-            type = "INTERGER";
+            type = "INTEGER";
         }
         else if(type == "Float64" || type == "single" || type == "double" || type == "decimal" || type == "Single" || type == "Double" || type == "Decimal")
         {
@@ -201,7 +201,7 @@ public class ParametersMenu : MonoBehaviour
         string type = typeof(T).Name;
         if (type == "Int32" || type == "Int64" || type == "Int16")
         {
-            type = "INTERGER";
+            type = "INTEGER";
         }
         else if (type == "Float64" || type == "single" || type == "double" || type == "decimal" || type == "Single" || type == "Double" || type == "Decimal")
         {
@@ -319,7 +319,7 @@ public class ParametersMenu : MonoBehaviour
         string type = typeof(T).Name;
         if (type == "Int32" || type == "Int64" || type == "Int16")
         {
-            type = "INTERGER";
+            type = "INTEGER";
         }
         else if (type == "Float64" || type == "single" || type == "double" || type == "decimal" || type == "Single" || type == "Double" || type == "Decimal")
         {
