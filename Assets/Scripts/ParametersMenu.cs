@@ -16,21 +16,22 @@ public class ParametersMenu : MonoBehaviour
     public GameObject MainMenu;
     public GameObject ParameterMenu;
     //Parameters Menu -> Middle Panel -> Variables
-    public GameObject VariablesGameObject;
+    public GameObject ParameterGameObject;
     public Button SubmitParametersButton;
     public JObject parametersInfo;
-
+    private float panelListHeight;
+    private bool panelFlag = false;
     private Dictionary<string, Dictionary<string, JToken>> objectParameter;
     private Dictionary<string, JToken> customParameters;
     void OnEnable()
     {
         customParameters = new Dictionary<string, JToken>();
-
+        /*
         foreach (Transform child in VariablesGameObject.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
-        /*
+        
          * On Getting Values from ARgorithmCloudMenu for parametersInfo jObject
          * It takes some time to do so. So a timer is set withn the Coroutine for
          * the jobject to load all the values
@@ -40,6 +41,14 @@ public class ParametersMenu : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(panelListHeight>0f && !panelFlag)
+        {
+            RectTransform panelRT = ParameterGameObject.transform.GetComponent<RectTransform>();
+            //panelRT.sizeDelta = new Vector2(0, this.panelListHeight);
+            Debug.Log(this.panelListHeight);
+            panelRT.offsetMin = new Vector2(0, -this.panelListHeight);
+            panelFlag = true;
+        }
         List<string> variables = new List<string>(objectParameter.Keys);
         foreach (var variable in variables)
         {
@@ -50,7 +59,8 @@ public class ParametersMenu : MonoBehaviour
             }
             SubmitParametersButton.interactable = true;
         }
-        
+
+
     }
     private void SettingUpParametersInfo()
     {
@@ -97,6 +107,16 @@ public class ParametersMenu : MonoBehaviour
                     break;
             }
         }
+
+
+        for (int i = 0; i < 40; i++)
+        {
+            GameObject matrixParameter = Instantiate(Resources.Load("MatrixParameterPrefab") as GameObject);
+            matrixParameter.transform.parent = ParameterGameObject.transform;
+            matrixParameter.transform.localScale = new Vector3(1, 1, 1);
+            RectTransform rt = matrixParameter.transform.GetComponent<RectTransform>();
+            this.panelListHeight += rt.rect.height + 50;
+        }
     }
     private void SetupVariableParameters<T>(string variable,string description)
     {
@@ -111,7 +131,7 @@ public class ParametersMenu : MonoBehaviour
         * Instantiates SingleParameterPrefab
         */
         GameObject variableParameter = Instantiate(Resources.Load("SingleParameterPrefab") as GameObject);
-        variableParameter.transform.parent = VariablesGameObject.transform;
+        variableParameter.transform.parent = ParameterGameObject.transform;
         variableParameter.transform.localScale = new Vector3(1, 1, 1);
         /*
         * Child holds the text component within SingleParameterPrefab and sets variable name
@@ -170,7 +190,10 @@ public class ParametersMenu : MonoBehaviour
             }
 
         });
-        
+
+        RectTransform rt = variableParameter.transform.GetComponent<RectTransform>();
+        this.panelListHeight += rt.rect.height + 50;
+
     }
 
     private void SetupArrayParameters<T>(string variable,string description)
@@ -188,7 +211,7 @@ public class ParametersMenu : MonoBehaviour
         * Instantiates Array Parameter Prefab
         */
         GameObject arrayParameter = Instantiate(Resources.Load("ArrayParameterPrefab") as GameObject);
-        arrayParameter.transform.parent = VariablesGameObject.transform;
+        arrayParameter.transform.parent = ParameterGameObject.transform;
         arrayParameter.transform.localScale = new Vector3(1, 1, 1);
         /*
         * Child holds the text component within Array Parameter Prefab and sets variable name
@@ -284,6 +307,8 @@ public class ParametersMenu : MonoBehaviour
                 customParameters.Remove(variable);
             }
         });
+        RectTransform rt = arrayParameter.transform.GetComponent<RectTransform>();
+        this.panelListHeight += rt.rect.height + 50;
     }
 
     private void SetupMatrixParameters<T>(string variable,string description)
@@ -301,7 +326,7 @@ public class ParametersMenu : MonoBehaviour
         * Instantiates Matrix Parameter Prefab
         */
         GameObject matrixParameter = Instantiate(Resources.Load("MatrixParameterPrefab") as GameObject);
-        matrixParameter.transform.parent = VariablesGameObject.transform;
+        matrixParameter.transform.parent = ParameterGameObject.transform;
         matrixParameter.transform.localScale = new Vector3(1, 1, 1);
         /*
         * Child holds the text component within Matrix Parameter Prefab and sets variable name
@@ -426,7 +451,10 @@ public class ParametersMenu : MonoBehaviour
                 customParameters.Remove(variable);
             }
         });
-        
+
+        RectTransform rt = matrixParameter.transform.GetComponent<RectTransform>();
+        this.panelListHeight += rt.rect.height + 50;
+
     }
     void OnDisable()
     {

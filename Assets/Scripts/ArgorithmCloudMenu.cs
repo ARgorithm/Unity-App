@@ -15,20 +15,35 @@ public class ArgorithmCloudMenu : MonoBehaviour
     public GameObject ArgorithmUiObject;
     public GameObject ParameterMenu;
     public Transform PanelListHolderGameObject;
+    private float panelListHeight;
+    private bool flag = false;
     // this function is called only when it is enabled or set to active
     void OnEnable()
     {
         list();
     }
 
+    private void Update()
+    {
+        if (panelListHeight > 0 && !flag)
+        {
+            RectTransform panelRT = PanelListHolderGameObject.transform.GetComponent<RectTransform>();
+            //panelRT.sizeDelta = new Vector2(0, this.panelListHeight);
+            Debug.Log(this.panelListHeight);
+            panelRT.offsetMin = new Vector2(0, -this.panelListHeight);
+            flag = true;
+        }
+    }
+
     //Function to list algorithms present for showing animations of them
     public void list()
     {
+        
         foreach (Transform child in PanelListHolderGameObject.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
-
+        
         StartCoroutine(
             APIClient.Instance.list(
                 (r) => callback(r)
@@ -38,13 +53,15 @@ public class ArgorithmCloudMenu : MonoBehaviour
 
     void callback(ARgorithmCollection lar)
     {
-        var NoOfAlgos = 0;
+        this.panelListHeight = 0;
         //Instantiates the UI object(a prefab) dynamically to list the various algos
         foreach (ARgorithmModel item in lar.items)
         {
             var Item = Instantiate(ArgorithmUiObject);
             Item.transform.SetParent(PanelListHolderGameObject);
             Item.transform.localScale = new Vector3(1, 1, 1);
+            
+
             var child = Item.transform.GetChild(0).gameObject;
             child.GetComponent<TextMeshProUGUI>().SetText(item.argorithmID.ToUpper());
 
@@ -62,24 +79,22 @@ public class ArgorithmCloudMenu : MonoBehaviour
                 ParameterMenu.SetActive(true);
             });
 
-            NoOfAlgos += 1;
+            RectTransform rt = Item.transform.GetComponent<RectTransform>();
+            this.panelListHeight += rt.rect.height+50;
+            
         }
 
-        // If more than 5 algos are not present, fill up rest of the space with blank boxes
-        if (NoOfAlgos < 5)
+        /*
+        
+        for(int i=0;i<40;i++)
         {
-            for (int i = 0; i < 5 - NoOfAlgos; i++)
-            {
-                var Item = Instantiate(ArgorithmUiObject);
-                Item.transform.SetParent(PanelListHolderGameObject);
-                Item.transform.localScale = new Vector3(1, 1, 1);
-
-                foreach (Transform child in Item.transform)
-                {
-                    GameObject.Destroy(child.gameObject);
-                }
-            }
+            var Item = Instantiate(ArgorithmUiObject);
+            Item.transform.SetParent(PanelListHolderGameObject);
+            Item.transform.localScale = new Vector3(1, 1, 1);
+            RectTransform rt = Item.transform.GetComponent<RectTransform>();
+            this.panelListHeight += rt.rect.height + 50;
         }
+        */
     }
     public void BackButton()
     {
