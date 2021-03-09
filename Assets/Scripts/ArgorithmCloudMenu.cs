@@ -29,7 +29,6 @@ public class ArgorithmCloudMenu : MonoBehaviour
         {
             RectTransform panelRT = PanelListHolderGameObject.transform.GetComponent<RectTransform>();
             //panelRT.sizeDelta = new Vector2(0, this.panelListHeight);
-            Debug.Log(this.panelListHeight);
             panelRT.offsetMin = new Vector2(0, -this.panelListHeight);
             flag = true;
         }

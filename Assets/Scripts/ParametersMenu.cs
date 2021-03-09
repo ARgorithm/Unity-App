@@ -26,12 +26,12 @@ public class ParametersMenu : MonoBehaviour
     void OnEnable()
     {
         customParameters = new Dictionary<string, JToken>();
-        /*
-        foreach (Transform child in VariablesGameObject.transform)
+        
+        foreach (Transform child in ParameterGameObject.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
-        
+        /*
          * On Getting Values from ARgorithmCloudMenu for parametersInfo jObject
          * It takes some time to do so. So a timer is set withn the Coroutine for
          * the jobject to load all the values
@@ -45,7 +45,6 @@ public class ParametersMenu : MonoBehaviour
         {
             RectTransform panelRT = ParameterGameObject.transform.GetComponent<RectTransform>();
             //panelRT.sizeDelta = new Vector2(0, this.panelListHeight);
-            Debug.Log(this.panelListHeight);
             panelRT.offsetMin = new Vector2(0, -this.panelListHeight);
             panelFlag = true;
         }
@@ -106,16 +105,6 @@ public class ParametersMenu : MonoBehaviour
                         SetupMatrixParameters<int>(variable, description);
                     break;
             }
-        }
-
-
-        for (int i = 0; i < 40; i++)
-        {
-            GameObject matrixParameter = Instantiate(Resources.Load("MatrixParameterPrefab") as GameObject);
-            matrixParameter.transform.parent = ParameterGameObject.transform;
-            matrixParameter.transform.localScale = new Vector3(1, 1, 1);
-            RectTransform rt = matrixParameter.transform.GetComponent<RectTransform>();
-            this.panelListHeight += rt.rect.height + 50;
         }
     }
     private void SetupVariableParameters<T>(string variable,string description)
@@ -456,10 +445,7 @@ public class ParametersMenu : MonoBehaviour
         this.panelListHeight += rt.rect.height + 50;
 
     }
-    void OnDisable()
-    {
-        Debug.Log("Parameters Menu diasbled");
-    }
+  
    
     private T Parse<T>(string elem)
     {
@@ -485,7 +471,6 @@ public class ParametersMenu : MonoBehaviour
         string argorithmID = PlayerPrefs.GetString("argorithmID");
         string parametersInStringFormat = JsonConvert.SerializeObject(customParameters, Formatting.Indented);
         JObject parameters = JObject.Parse(parametersInStringFormat);
-        Debug.Log(parameters);
         
         StartCoroutine(
             APIClient.Instance.run(
@@ -524,7 +509,6 @@ public class ParametersMenu : MonoBehaviour
 
         This function should send the states to the ARgorithm Parser which in turn send to ARStage
         */
-        Debug.Log(response.status);
         string data = JsonConvert.SerializeObject(response);
         PlayerPrefs.SetString("StateSet", data);
         //PlayerPrefs.SetString("argorithmID", argorithmID);
