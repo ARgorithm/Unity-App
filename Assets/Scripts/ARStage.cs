@@ -24,6 +24,7 @@ public class ARStage : MonoBehaviour
     public GameObject placementIndicator;
     public GameObject cube;
     public GameObject CommentBox;
+    public GameObject StatesCounterGameObject;
     public GameObject ARgorithmHeading;
 
     private StageData stageData;
@@ -62,6 +63,10 @@ public class ARStage : MonoBehaviour
             UpdatePlacementPose();
             UpdatePlacementIndicator();
         }
+        if(index+1 > 0 && index+1<=stageData.size)
+        {
+            ChangeStateCounter(index+1, stageData.size);
+        }
     }
 
     private void OnApplicationQuit()
@@ -69,10 +74,19 @@ public class ARStage : MonoBehaviour
         PlayerPrefs.DeleteKey("CloudMenuEnabled");
     }
 
+    //function to change UI comments. Display states comments
     private void ChangeComments(string text)
     {
         // called in updates based on EventList contents with "comments" key
         CommentBox.GetComponent<TextMeshProUGUI>().SetText(text); 
+    }
+
+    //function to change UI states counter. Display states at which the stage is running
+    private void ChangeStateCounter(int step,int totalSteps)
+    {
+        string stepString = step.ToString();
+        string totalStepsString = totalSteps.ToString();
+        StatesCounterGameObject.GetComponent<TextMeshProUGUI>().SetText(stepString+"/"+totalStepsString);
     }
 
     //Dont Change the code below this comment 
