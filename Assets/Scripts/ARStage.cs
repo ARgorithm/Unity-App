@@ -108,17 +108,21 @@ public class ARStage : MonoBehaviour
         }
         State args = stageData.states[index];
         Debug.Log(args.state_type);
-        if (args.state_type != "comment")
+        if (args.state_type == "comment")
         {
-            string comment = args.comments;
-            ChangeComments(comment);
-            if (index + 1 < stageData.size)
-                index++;
-            else
-                return;
+            if (args.comments.Length > 0 || args.comments != " ")
+            {
+                ChangeComments(args.comments);
+            }
+            return;
         }
         string id = (string)args.state_def["id"];
         string funcType = args.state_type.Split('_').ToList()[1];
+        if(args.comments.Length > 0 || args.comments != " ")
+        {
+            ChangeComments(args.comments);
+        }
+
         if (stageData.objectMap[id].rendered && funcType == "declare")
         {
             idToPlaceholderMap[id].SetActive(true);
@@ -135,7 +139,6 @@ public class ARStage : MonoBehaviour
             idToPlaceholderMap[id] = placeHolder;
         }
 
-        ChangeComments(args.comments);
         stageData.eventList[index](args, idToPlaceholderMap[id]);
         if (index + 1 < stageData.states.Count)
         {
