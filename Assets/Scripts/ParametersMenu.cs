@@ -49,15 +49,25 @@ public class ParametersMenu : MonoBehaviour
             panelFlag = true;
         }
         List<string> variables = new List<string>(objectParameter.Keys);
-        foreach (var variable in variables)
+        //If variables.Count == 0 means if there are no parameters itself then SubmitParametersButton should be not interactable
+        if(variables.Count == 0)
         {
-            if (!customParameters.ContainsKey(variable))
-            {
-                SubmitParametersButton.interactable = false;
-                break;
-            }
-            SubmitParametersButton.interactable = true;
+            SubmitParametersButton.interactable = false;
+
         }
+        else
+        {
+            foreach (var variable in variables)
+            {
+                if (!customParameters.ContainsKey(variable))
+                {
+                    SubmitParametersButton.interactable = false;
+                    break;
+                }
+                SubmitParametersButton.interactable = true;
+            }
+        }
+        
 
 
     }
