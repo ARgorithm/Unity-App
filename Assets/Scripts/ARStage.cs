@@ -33,11 +33,12 @@ public class ARStage : MonoBehaviour
 
     void Start()
     {
-        //To allow screen rotation on any orientation
+        //Forced screen rotation to prevent landscape modes
         Screen.autorotateToPortrait = true;
         Screen.autorotateToPortraitUpsideDown = true;
         Screen.autorotateToLandscapeLeft = true;
         Screen.autorotateToLandscapeRight = true;
+        Screen.orientation = ScreenOrientation.AutoRotation;
 
         string argorithmID = PlayerPrefs.GetString("argorithmID");
         ARgorithmHeading.GetComponent<TextMeshProUGUI>().SetText(argorithmID);

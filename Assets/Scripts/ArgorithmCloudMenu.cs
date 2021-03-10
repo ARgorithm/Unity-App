@@ -20,6 +20,13 @@ public class ArgorithmCloudMenu : MonoBehaviour
     // this function is called only when it is enabled or set to active
     void OnEnable()
     {
+        //Forced screen rotation to prevent landscape modes
+        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = true;
+        Screen.autorotateToLandscapeLeft = false;
+        Screen.autorotateToLandscapeRight = false;
+        Screen.orientation = ScreenOrientation.Portrait;
+
         list();
     }
 

@@ -131,6 +131,13 @@ public class Login : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Forced screen rotation to prevent landscape modes
+        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = true;
+        Screen.autorotateToLandscapeLeft = false;
+        Screen.autorotateToLandscapeRight = false;
+        Screen.orientation = ScreenOrientation.Portrait;
+
         CreateAccountButton.interactable = false;
         LoginButton.interactable = false;
 

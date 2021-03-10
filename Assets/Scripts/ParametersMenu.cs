@@ -25,6 +25,13 @@ public class ParametersMenu : MonoBehaviour
     private Dictionary<string, JToken> customParameters;
     void OnEnable()
     {
+        //Forced screen rotation to prevent landscape modes
+        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = true;
+        Screen.autorotateToLandscapeLeft = false;
+        Screen.autorotateToLandscapeRight = false;
+        Screen.orientation = ScreenOrientation.Portrait;
+       
         customParameters = new Dictionary<string, JToken>();
         
         foreach (Transform child in ParameterGameObject.transform)
@@ -67,9 +74,6 @@ public class ParametersMenu : MonoBehaviour
                 SubmitParametersButton.interactable = true;
             }
         }
-        
-
-
     }
     private void SettingUpParametersInfo()
     {

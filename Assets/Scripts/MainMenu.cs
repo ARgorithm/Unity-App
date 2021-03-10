@@ -101,10 +101,12 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         //To maintain screen rotation on portrait mode only
+        //Forced screen rotation to prevent landscape modes
         Screen.autorotateToPortrait = true;
         Screen.autorotateToPortraitUpsideDown = true;
         Screen.autorotateToLandscapeLeft = false;
         Screen.autorotateToLandscapeRight = false;
+        Screen.orientation = ScreenOrientation.Portrait;
 
         if (PlayerPrefs.HasKey("CloudMenuEnabled"))
         {
