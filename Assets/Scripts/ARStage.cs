@@ -110,7 +110,12 @@ public class ARStage : MonoBehaviour
         Debug.Log(args.state_type);
         if (args.state_type != "comment")
         {
-            /*ask user to set position of object if not set already*/
+            string comment = args.comments;
+            ChangeComments(comment);
+            if (index + 1 < stageData.size)
+                index++;
+            else
+                return;
         }
         string id = (string)args.state_def["id"];
         string funcType = args.state_type.Split('_').ToList()[1];
