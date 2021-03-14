@@ -1835,6 +1835,7 @@ MonoBehaviour:
   - {fileID: -7403413597509130127}
   m_AtlasTextureIndex: 0
   m_IsMultiAtlasTexturesEnabled: 0
+  m_ClearDynamicDataOnBuild: 0
   m_UsedGlyphRects:
   - m_X: 0
     m_Y: 0
@@ -2551,8 +2552,8 @@ MonoBehaviour:
     italicTypeface: {fileID: 0}
   - regularTypeface: {fileID: 0}
     italicTypeface: {fileID: 0}
-  - regularTypeface: {fileID: 0}
-    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 11400000, guid: 5d9f3cd756810c446afeea3fee02c80b, type: 2}
+    italicTypeface: {fileID: 11400000, guid: 5d9f3cd756810c446afeea3fee02c80b, type: 2}
   - regularTypeface: {fileID: 0}
     italicTypeface: {fileID: 0}
   - regularTypeface: {fileID: 0}

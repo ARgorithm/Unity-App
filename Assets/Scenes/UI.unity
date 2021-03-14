@@ -571,6 +571,8 @@ GameObject:
   - component: {fileID: 99337747}
   - component: {fileID: 99337746}
   - component: {fileID: 99337745}
+  - component: {fileID: 99337748}
+  - component: {fileID: 99337749}
   m_Layer: 5
   m_Name: GitHub Panel
   m_TagString: Untagged
@@ -661,6 +663,72 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &99337748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99337743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 99337745}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 99337749}
+        m_MethodName: HyperLinkToGithub
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &99337749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99337743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec1b7b4136be3f4aab7caee57cb22ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &122589840
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,7 +860,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 600, y: -73.47378}
+  m_AnchoredPosition: {x: 600, y: -73.5}
   m_SizeDelta: {x: 318.98636, y: 67.72216}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &126347978
@@ -1135,7 +1203,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -743}
+  m_AnchoredPosition: {x: 400, y: -743.5037}
   m_SizeDelta: {x: 625, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &220107823
@@ -1375,7 +1443,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -274}
+  m_AnchoredPosition: {x: 400, y: -273.89777}
   m_SizeDelta: {x: 703.67737, y: 132.19073}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &272289825
@@ -1397,7 +1465,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select a <color=#FEBC2C>ARgorithm</color> from the available ones
+  m_text: "Select a <color=#FEBC2C>ARgorithm</color> from \nthe available ones "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: db8e5d852fafb3f4ab85b612e8d470ce, type: 2}
   m_sharedMaterial: {fileID: 8963545961531463164, guid: db8e5d852fafb3f4ab85b612e8d470ce,
@@ -1441,7 +1509,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -1769,6 +1837,8 @@ GameObject:
   - component: {fileID: 349355319}
   - component: {fileID: 349355318}
   - component: {fileID: 349355317}
+  - component: {fileID: 349355320}
+  - component: {fileID: 349355321}
   m_Layer: 5
   m_Name: GitHub Panel
   m_TagString: Untagged
@@ -1859,6 +1929,72 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &349355320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349355315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 349355317}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 349355321}
+        m_MethodName: HyperLinkToGithub
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &349355321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349355315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec1b7b4136be3f4aab7caee57cb22ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &373145510
 GameObject:
   m_ObjectHideFlags: 0
@@ -2454,7 +2590,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -179}
+  m_AnchoredPosition: {x: 400, y: -178.55313}
   m_SizeDelta: {x: 625, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &492046893
@@ -2714,7 +2850,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -389}
+  m_AnchoredPosition: {x: 400, y: -389.2483}
   m_SizeDelta: {x: 625, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &498761542
@@ -2865,7 +3001,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -487}
+  m_AnchoredPosition: {x: 400, y: -487.09586}
   m_SizeDelta: {x: 348.3363, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &559574886
@@ -3129,7 +3265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -649}
+  m_AnchoredPosition: {x: 400, y: -649.52563}
   m_SizeDelta: {x: 800, y: 52.261063}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &659324770
@@ -3763,7 +3899,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -570}
+  m_AnchoredPosition: {x: 400, y: -570.2455}
   m_SizeDelta: {x: 800, y: 45.60411}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &945662814
@@ -4016,7 +4152,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 440.5, y: -80.986206}
+  m_AnchoredPosition: {x: 440.5025, y: -80.986206}
   m_SizeDelta: {x: 568.8229, y: 78.005035}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1025200737
@@ -5641,8 +5777,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You can connect to ARgorithmCloud Server where you can find ARgorithms
-    made by many contributors and developers
+  m_text: 'You can connect to ARgorithmCloud Server
+
+    where you can find ARgorithms
+    made by
+
+    many contributors and developers'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: db8e5d852fafb3f4ab85b612e8d470ce, type: 2}
   m_sharedMaterial: {fileID: 8963545961531463164, guid: db8e5d852fafb3f4ab85b612e8d470ce,
@@ -5686,7 +5826,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -6078,7 +6218,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: '
 
-    Setup your own ARgorithm server and connect to it'
+    Setup your own ARgorithm server and
+
+    connect to it'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: db8e5d852fafb3f4ab85b612e8d470ce, type: 2}
   m_sharedMaterial: {fileID: 8963545961531463164, guid: db8e5d852fafb3f4ab85b612e8d470ce,
@@ -6122,7 +6264,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -6190,7 +6332,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 115.5, y: -80.986206}
+  m_AnchoredPosition: {x: 115.58856, y: -80.986206}
   m_SizeDelta: {x: 81.005005, y: 94.17969}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1801051561
@@ -6532,7 +6674,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 200, y: -73.47378}
+  m_AnchoredPosition: {x: 200, y: -73.5}
   m_SizeDelta: {x: 318.98636, y: 67.72216}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1871835922
@@ -6741,7 +6883,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -849}
+  m_AnchoredPosition: {x: 400, y: -848.8513}
   m_SizeDelta: {x: 625, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1892302671
@@ -6882,7 +7024,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -284}
+  m_AnchoredPosition: {x: 400, y: -283.9007}
   m_SizeDelta: {x: 625, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1903245571
@@ -7022,7 +7164,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -947}
+  m_AnchoredPosition: {x: 400, y: -946.6989}
   m_SizeDelta: {x: 348.3363, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1925248411
@@ -7150,7 +7292,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -63}
+  m_AnchoredPosition: {x: 400, y: -62.939667}
   m_SizeDelta: {x: 800, y: 95.53175}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2031689196
@@ -7287,7 +7429,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -91.5}
+  m_AnchoredPosition: {x: 400, y: -91.47558}
   m_SizeDelta: {x: 802.50073, y: 133.2487}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2126360450
