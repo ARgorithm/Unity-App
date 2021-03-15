@@ -12,5 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/ARStage.unity
     guid: 9b8dcc6c86513a04da8b702e13f5b745
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 7cec985fee73d2a408194e0aead634a3,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 4d77a2d5be99e174c8945645f1e51fec,
       type: 2}

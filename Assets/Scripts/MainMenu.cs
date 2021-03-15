@@ -19,6 +19,7 @@ public class MainMenu : MonoBehaviour
 
     public GameObject AlertBoxMain;
 
+    
     //Alert Box adds UI text ryt below Connect to local server to Alert the users 
     //Or give the user some kind of information like, invalid password, username, 
     //unable to connect to server etc. Remember to reset the Alert box to empty string.
@@ -99,6 +100,14 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        //To maintain screen rotation on portrait mode only
+        //Forced screen rotation to prevent landscape modes
+        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = true;
+        Screen.autorotateToLandscapeLeft = false;
+        Screen.autorotateToLandscapeRight = false;
+        Screen.orientation = ScreenOrientation.Portrait;
+
         if (PlayerPrefs.HasKey("CloudMenuEnabled"))
         {
             Mainmenu.SetActive(false);
