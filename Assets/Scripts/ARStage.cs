@@ -63,9 +63,9 @@ public class ARStage : MonoBehaviour
             UpdatePlacementPose();
             UpdatePlacementIndicator();
         }
-        if(index+1 > 0 && index+1<=stageData.size)
+        if(index > -1 && index<=stageData.size)
         {
-            ChangeStateCounter(index+1, stageData.size);
+            ChangeStateCounter(index, stageData.size);
         }
     }
 
@@ -178,7 +178,7 @@ public class ARStage : MonoBehaviour
         if (index <= -1)
             return;
         State args = stageData.states[index];
-        if (args.state_type == "comments")
+        if (args.state_type == "comment")
         {
             index--;
             return;
