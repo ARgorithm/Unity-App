@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - CommentBox
+  - placeHolder
   layers:
   - Default
   - TransparentFX
