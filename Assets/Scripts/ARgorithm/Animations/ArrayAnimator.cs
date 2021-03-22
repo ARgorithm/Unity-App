@@ -52,7 +52,7 @@ namespace ARgorithm.Animations
                 set
                 {
                     _faceValue = value;
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < this.cube.transform.childCount; i++)
                     {
                         var child = this.cube.transform.GetChild(i).gameObject;
                         child.GetComponent<TextMeshPro>().SetText(_faceValue.Value);

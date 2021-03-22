@@ -12,7 +12,8 @@ using ARgorithm.Structure.Typing;
 
 namespace ARgorithm.Structure
 {
-    public class ArrayStructure : BaseStructure{
+    public class ArrayStructure : BaseStructure
+    {
         /*
         ArrayStructure extends BaseStructure to handle the `ARgorithmToolkit.Array`.
         This will also initialize and control the physical array gameobject that will be shown to user
@@ -28,7 +29,8 @@ namespace ARgorithm.Structure
             this.animator = structure.AddComponent(typeof(ArrayAnimator)) as ArrayAnimator;
         }
         
-        public override void Operate(State state, GameObject placeholder){
+        public override void Operate(State state, GameObject placeholder)
+        {
             /*
             override the virtual function of parent class to handle array states
             */
@@ -53,7 +55,8 @@ namespace ARgorithm.Structure
             
         }
 
-        public override void Undo(State state){
+        public override void Undo(State state)
+        {
             // Called to undo a change enforced by `state`
             string funcType = state.state_type.Split('_').ToList()[1];
             switch (funcType)
@@ -88,7 +91,8 @@ namespace ARgorithm.Structure
             }
         }
 
-        private void Declare(State state, GameObject placeholder){
+        private void Declare(State state, GameObject placeholder)
+        {
             // Creates Array GameObjects
             this.rendered = true;
             this.name = (string) state.state_def["variable_name"];
@@ -96,7 +100,8 @@ namespace ARgorithm.Structure
             this.body = new NDimensionalArray(jt);
             animator.Declare(body, placeholder);
         }
-        private void Iter(State state){
+        private void Iter(State state)
+        {
             // Highlight certain index of Array and might update value
             JToken index = state.state_def["index"];
             JToken value;
@@ -108,7 +113,8 @@ namespace ARgorithm.Structure
             animator.Iter(_index, this.body[index]);
         }
 
-        private void Compare(State state){
+        private void Compare(State state)
+        {
             // Highlights two values in array to indicate comparision operation
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
@@ -117,7 +123,8 @@ namespace ARgorithm.Structure
             animator.Compare(_index1, _index2);
         }
 
-        private void Swap(State state){
+        private void Swap(State state)
+        {
             // Swaps value stored at indexes
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];

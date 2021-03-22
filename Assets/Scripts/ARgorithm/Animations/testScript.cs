@@ -3,10 +3,117 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using ARgorithm.Structure.Typing;
+using Newtonsoft.Json.Linq;
 
 
 public class testScript : MonoBehaviour
 {
+    class VariableCube<T>
+    {
+        private ContentType _faceValue;
+        private Vector3 _position;
+        private Vector3 _scale;
+        public GameObject cube;
+        private Quaternion _rotation;
+        public ContentType faceValue
+        {
+            get
+            {
+                return _faceValue;
+            }
+            set
+            {
+                _faceValue = value;
+                for (int i = 0; i < this.cube.transform.childCount; i++)
+                {
+                    var child = this.cube.transform.GetChild(i).gameObject;
+                    string text;
+                    string type = typeof(T).Name;
+             
+                    if (type == "Int32")
+                    {
+                        text = _faceValue.Value.ToString();
+                    }
+                    else if (type == "Single")
+                    {
+                        string str = _faceValue.Value.ToString();
+                        float f = float.Parse(str);
+                        text = f.ToString("0.0000");
+                    }
+                    else if (type == "String")
+                    {
+                        text = _faceValue.Value.ToString();
+                    }
+                    else
+                    {
+                        text = "";
+                    }
+                    child.GetComponent<TextMeshPro>().SetText(text);
+                }
+            }
+        }
+
+        public VariableCube(ContentType value)
+        {
+            this.cube = (GameObject)Instantiate(Resources.Load("Cube") as GameObject);
+            string type = typeof(T).Name;
+            var cubeRenderer = this.cube.GetComponent<Renderer>();
+            if (type == "Int32")
+            {
+                cubeRenderer.material.SetColor("_Color", Color.blue);
+            }
+            else if (type == "Single")
+            {
+                cubeRenderer.material.SetColor("_Color", Color.green);
+            }
+            else if (type == "String")
+            {
+                cubeRenderer.material.SetColor("_Color", Color.red);
+            }
+            this._scale = this.cube.transform.localScale;
+            this.faceValue = value;
+        }
+
+        public Vector3 position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                this.cube.transform.localPosition = value;
+                this._position = value;
+            }
+        }
+
+        public Vector3 scale
+        {
+            get
+            {
+                return _scale;
+            }
+
+            set
+            {
+                this.cube.transform.localScale = value;
+                this._scale = value;
+            }
+        }
+
+        public Quaternion rotation
+        {
+            get
+            {
+                return _rotation;
+            }
+            set
+            {
+                this.cube.transform.rotation = value;
+                this._rotation = value;
+            }
+        }
+    }
     class Cube
     {
         private int _faceValue;
@@ -29,6 +136,7 @@ public class testScript : MonoBehaviour
                 child.GetComponent<TextMeshPro>().SetText("[" + _index.ToString() + "]");
                 */
             }
+
         }
 
         public int faceValue
@@ -40,7 +148,7 @@ public class testScript : MonoBehaviour
             set
             {
                 _faceValue = value;
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < this.cube.transform.childCount; i++)
                 {
                     var child = this.cube.transform.GetChild(i).gameObject;
                     child.GetComponent<TextMeshPro>().SetText(_faceValue.ToString());
@@ -97,6 +205,7 @@ public class testScript : MonoBehaviour
         }
     }
 
+    private GameObject variableObject;
     //Array of cubeclass holds the Gameobjects
     private Cube[] arrayOfCubes;
     private int[,,] body = new int[3, 3, 3]{
@@ -107,10 +216,6 @@ public class testScript : MonoBehaviour
     // Start is called before the first frame update
     public void start()
     {
-        GameObject placeHolderObject = new GameObject("placeHolder");
-        placeHolderObject.transform.position = new Vector3(0, 0, 0);
-       
-
         int[] shape1D = { 5 };
         int[] body1D = new int[5] { 1, 2, 3, 4, 5 };
         /*
@@ -154,19 +259,77 @@ public class testScript : MonoBehaviour
 
         int[] shape3D = { body3D.GetLength(0), body3D.GetLength(1), body3D.GetLength(2) };
         GameObject array = new GameObject("array");
+        ContentType longValue = new ContentType((JToken)1123456);
+        ContentType doubleValue = new ContentType((JToken)12241.4124125);
+        ContentType stringValue = new ContentType((JToken)"%");
+        Debug.Log(longValue.type);
+        Debug.Log(doubleValue.type);
+        Debug.Log(stringValue.type);
 
+        GameObject placeHolderObject = new GameObject("placeHolder");
+        placeHolderObject.transform.position = new Vector3(0, 0, 0);
+
+        VariableDeclare<int>(longValue,placeHolderObject);
+        placeHolderObject.transform.position = new Vector3(0.5f, 0, 0);
+        /*VariableDeclare<float>(doubleValue, placeHolderObject);
+        placeHolderObject.transform.position = new Vector3(1.0f, 0, 0);
+        VariableDeclare<string>(stringValue, placeHolderObject);*/
         //Array1DDeclare(array, shape1D, body1D, placeHolderObject);
         //Array2DDeclare(array, shape2D, body2D, placeHolderObject);
-        Array3DDeclare(array, shape3D, body3D,placeHolderObject);
+        //Array3DDeclare(array, shape3D, body3D,placeHolderObject);
     }
 
-    
+    private void VariableDeclare<T>(ContentType variable,GameObject placeHolder)
+    {
+        var variableCube = new VariableCube<T>(variable);
+        variableObject = variableCube.cube;
+        variableCube.cube.transform.SetParent(placeHolder.transform);
+        variableCube.position = placeHolder.transform.position;
+        variableCube.rotation = placeHolder.transform.rotation;
+        float offset = variableCube.cube.transform.localScale.x * 0.5f;
+        variableCube.position += new Vector3(0, offset, 0);
+    }
+
+    public void Highlight(ContentType value)
+    {
+        Color targetColor = new Color(1, 1, 1, 1);
+        Material materialToChange;
+        materialToChange = variableObject.GetComponent<Renderer>().material;
+        StartCoroutine(LerpFunctionHighlight(materialToChange, targetColor, Constants.ITER_TIMER));
+    }
+
+    IEnumerator LerpFunctionHighlight(Material materialToChange, Color endValue, float duration)
+    {
+        float time = 0;
+        Color startValue = materialToChange.color;
+
+        while (time < duration)
+        {
+            materialToChange.color = Color.Lerp(startValue, endValue, time / duration);
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+        materialToChange.color = endValue;
+
+        time = 0;
+        while (time < duration)
+        {
+            materialToChange.color = Color.Lerp(endValue, startValue, time / duration);
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+        materialToChange.color = startValue;
+    }
+
 
     public void SwapUtility()
     {
-        List<int> index1 = new List<int>() {0,0,0};
+        /*List<int> index1 = new List<int>() {0,0,0};
         List<int> index2 = new List<int>() {0,2,0};
-        Swap(index1,index2,body);
+        Swap(index1,index2,body);*/
+        Highlight(new ContentType ((JToken)50));
     }
 
     private void Array1DDeclare(GameObject array, int[] shape, int[] body, GameObject placeHolder)
