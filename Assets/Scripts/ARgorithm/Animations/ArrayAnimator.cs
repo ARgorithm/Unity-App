@@ -112,14 +112,17 @@ namespace ARgorithm.Animations
         //Array of cubeclass holds the Gameobjects
         private Cube[] arrayOfCubes;
         private NDimensionalArray body;
-
-        public void Declare(NDimensionalArray body, GameObject placeHolder)
+        private string name;
+        private GameObject nameGameObject;
+        public void Declare(string name, NDimensionalArray body, GameObject placeHolder)
         {
             /*
             Sets Array represented by Cubes at placeholder
             */
+            this.name = name;
             this.body = body;
             GameObject array = new GameObject("array");
+            
             switch (body.Dimensions)
             {
                 case 1:
@@ -139,12 +142,16 @@ namespace ARgorithm.Animations
         private void Array1DDeclare(GameObject array,GameObject placeHolder)
         {
             List<int> shape = body.Shape;
-
+            nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
+            nameGameObject.transform.SetParent(placeHolder.transform);
+            nameGameObject.transform.localPosition = Vector3.zero;
+            nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
             // Handles 1-D arrays
             arrayOfCubes = new Cube[shape[0]];
             array.transform.parent = placeHolder.transform;
-            array.transform.position = placeHolder.transform.position;
-            array.transform.rotation = placeHolder.transform.rotation;
+            array.transform.localPosition = Vector3.zero;
+            array.transform.localRotation = Quaternion.identity;
 
             for (int i = 0; i < shape[0]; i++)
             {
@@ -181,17 +188,19 @@ namespace ARgorithm.Animations
                 indexGameObject.transform.localPosition = new Vector3(xPosition, yPosition, 0) - midpoint;
             }
             array.transform.position += new Vector3(0, offset, 0);
+            nameGameObject.transform.localPosition += new Vector3(0, 2.5f * offset, 0);
         }
 
         private void Array2DDeclare(GameObject array, GameObject placeHolder)
         {
             List<int> shape = body.Shape;
-
+            nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
             // Handles 2-D arrays
             arrayOfCubes = new Cube[shape[0] * shape[1]];
             array.transform.SetParent(placeHolder.transform);
-            array.transform.position = placeHolder.transform.position;
-            array.transform.rotation = placeHolder.transform.rotation;
+            array.transform.localPosition = Vector3.zero;
+            array.transform.localRotation = Quaternion.identity;
             for (int i = 0; i < shape[0] * shape[1]; i++)
             {
                 int xIndex = i / shape[1];
@@ -232,6 +241,10 @@ namespace ARgorithm.Animations
                 indexGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
                 indexGameObject.transform.localPosition = new Vector3(xPosition, yPosition, 0) - midpoint;
             }
+            nameGameObject.transform.SetParent(array.transform);
+            nameGameObject.transform.localPosition = new Vector3(0, yPosition + 2f * offset, 0);
+            nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
+
             for (int i = 0; i < shape[0]; i++)
             {
                 xPosition = -(arrayScale * 0.5f) - offset * 2;
@@ -248,11 +261,13 @@ namespace ARgorithm.Animations
         private void Array3DDeclare(GameObject array, GameObject placeHolder)
         {
             List<int> shape = body.Shape;
+            nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
             // Handles 3-D arrays
             arrayOfCubes = new Cube[shape[0] * shape[1] * shape[2]];
             array.transform.SetParent(placeHolder.transform, false);
-            array.transform.position = placeHolder.transform.position;
-            array.transform.rotation = placeHolder.transform.rotation;
+            array.transform.localPosition = Vector3.zero;
+            array.transform.localRotation = Quaternion.identity;
             //index i is mapped as body[x,y,z]
             for (int i = 0; i < shape[0] * shape[1] * shape[2]; i++)
             {
@@ -295,6 +310,9 @@ namespace ARgorithm.Animations
                 indexGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
                 indexGameObject.transform.localPosition = new Vector3(xPosition - midpoint.x, yPosition - midpoint.y, zPosition - midpoint.z);
             }
+            nameGameObject.transform.SetParent(array.transform);
+            nameGameObject.transform.localPosition = new Vector3(0, yPosition-midpoint.y + 2f * offset, zPosition);
+            nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
             for (int i = 0; i < shape[1]; i++)
             {
                 xPosition = -(arrayScale * 0.5f) - offset * 1.5f;
@@ -306,6 +324,7 @@ namespace ARgorithm.Animations
                 indexGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
                 indexGameObject.transform.localPosition = new Vector3(xPosition - midpoint.x, yPosition - midpoint.y, zPosition - midpoint.z);
             }
+            
             for (int i = 0; i < shape[0]; i++)
             {
                 zPosition = i * distanceX - (arrayScale * 0.5f) + offset;

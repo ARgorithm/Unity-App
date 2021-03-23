@@ -6,46 +6,44 @@ using ARgorithm.Structure.Typing;
 
 namespace ARgorithm.Animations
 {
-    abstract class GenericVariableCube
+    
+    interface ICube
     {
-        public abstract GameObject cube
+        ContentType faceValue
         {
-            get;
-            set;
-        }
-        public abstract ContentType faceValue
-        {
-            get;
-            set;
-        }
-        public abstract Vector3 position
-        {
-            get;
-            set;
-        }
-        public abstract Vector3 scale
-        {
-            get;
-            set;
-        }
-        public abstract Quaternion rotation 
-        {
-            get;
-            set;
+            get; set;
         }
 
+        Vector3 position
+        {
+            get; set;
+        }
+
+        Vector3 scale
+        {
+            get; set;
+        }
+
+        Quaternion rotation
+        {
+            get; set;
+        }
+
+        GameObject cube
+        {
+            get; set;
+        }
     }
-    
     public class VariableAnimator: MonoBehaviour
     {
-        class VariableCube<T> : GenericVariableCube
+        class VariableCube<T> : ICube
         {
             private ContentType _faceValue;
             private Vector3 _position;
             private Vector3 _scale;
             private  GameObject _cube;
             private Quaternion _rotation;
-            public override GameObject cube
+            public GameObject cube
             {
                 get
                 {
@@ -56,7 +54,7 @@ namespace ARgorithm.Animations
                     this._cube = value;
                 }
             }
-            public override ContentType faceValue 
+            public ContentType faceValue 
             {
                 get
                 {
@@ -123,7 +121,7 @@ namespace ARgorithm.Animations
                 this.faceValue = value;
             }
 
-            public override Vector3 position
+            public Vector3 position
             {
                 get
                 {
@@ -136,7 +134,7 @@ namespace ARgorithm.Animations
                 }
             }
 
-            public override Vector3 scale
+            public Vector3 scale
             {
                 get
                 {
@@ -150,7 +148,7 @@ namespace ARgorithm.Animations
                 }
             }
 
-            public override Quaternion rotation
+            public Quaternion rotation
             {
                 get
                 {
@@ -163,9 +161,18 @@ namespace ARgorithm.Animations
                 }
             }
         }
-        private GenericVariableCube variableObject;
-        public void Declare(ContentType variable,GameObject placeHolder)
+
+        private ICube variableObject;
+        private GameObject nameGameObject;
+        private string name;
+        public void Declare(string name, ContentType variable, GameObject placeHolder)
         {
+            this.name = name;
+            nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
+            nameGameObject.transform.SetParent(placeHolder.transform);
+            nameGameObject.transform.localPosition = new Vector3(0, 0, 0);
+            nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
             string type = variable.type;
             Debug.Log(type);
             switch (type)
@@ -189,13 +196,13 @@ namespace ARgorithm.Animations
         }
         private void VariableDeclare<T>(ContentType variable, GameObject placeHolder)
         {
-            var variableCube = new VariableCube<T>(variable);
-            variableObject = (VariableCube<T>)variableCube;
-            variableCube.cube.transform.SetParent(placeHolder.transform);
-            variableCube.position = placeHolder.transform.position;
-            variableCube.rotation = placeHolder.transform.rotation;
-            float offset = variableCube.cube.transform.localScale.x * 0.5f;
-            variableCube.position += new Vector3(0, offset, 0);
+            variableObject = new VariableCube<T>(variable);
+            variableObject.cube.transform.SetParent(placeHolder.transform);
+            variableObject.position = new Vector3(0, 0, 0);
+            variableObject.cube.transform.localRotation = new Quaternion(0, 0, 0, 0);
+            float offset = variableObject.scale.x * 0.5f;
+            variableObject.position += new Vector3(0, offset, 0);
+            nameGameObject.transform.localPosition += new Vector3(0, offset*2.5f, 0);
         }
         public void Set(ContentType value)
         {

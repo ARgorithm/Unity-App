@@ -38,8 +38,9 @@ namespace ARgorithm.Structure
                 case "declare":
                     this.Declare(state, placeholder);
                     break;
-                case "iter":
+                case "highlight":
                     this.Highlight(state);
+                    Debug.Log(this.value);
                     break;
                 default:
                     throw new UnsupportedStateException(String.Format("variable_{0} state type is not supported", funcType));
@@ -52,7 +53,7 @@ namespace ARgorithm.Structure
             this.name = (string)state.state_def["variable_name"];
             JToken jt = (JToken)state.state_def["value"];
             this.value = new ContentType(jt);
-            animator.Declare(this.value, placeholder);
+            animator.Declare(this.name, this.value, placeholder);
         }
 
         private void Highlight(State state)

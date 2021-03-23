@@ -98,7 +98,7 @@ namespace ARgorithm.Structure
             this.name = (string) state.state_def["variable_name"];
             JArray jt = (JArray) state.state_def["body"];
             this.body = new NDimensionalArray(jt);
-            animator.Declare(body, placeholder);
+            animator.Declare(this.name, body, placeholder);
         }
         private void Iter(State state)
         {

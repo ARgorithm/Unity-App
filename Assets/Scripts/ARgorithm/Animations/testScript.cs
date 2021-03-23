@@ -6,14 +6,42 @@ using ARgorithm.Structure.Typing;
 using Newtonsoft.Json.Linq;
 
 
+interface ICube
+{
+    ContentType faceValue
+    {
+        get;set;
+    }
+
+    Vector3 position
+    {
+        get;set;
+    }
+
+    Vector3 scale
+    {
+        get;set;
+    }
+
+    Quaternion rotation
+    {
+        get;set;
+    }
+
+    GameObject cube
+    {
+        get;set;
+    }
+}
+
 public class testScript : MonoBehaviour
 {
-    class VariableCube<T>
+    class VariableCube<T> : ICube
     {
         private ContentType _faceValue;
         private Vector3 _position;
         private Vector3 _scale;
-        public GameObject cube;
+        private GameObject _cube;
         private Quaternion _rotation;
         public ContentType faceValue
         {
@@ -113,6 +141,19 @@ public class testScript : MonoBehaviour
                 this._rotation = value;
             }
         }
+
+        public GameObject cube
+        {
+            get
+            {
+                return this._cube;
+            }
+
+            set
+            {
+                this._cube = value;
+            }
+        }
     }
     class Cube
     {
@@ -205,7 +246,7 @@ public class testScript : MonoBehaviour
         }
     }
 
-    private GameObject variableObject;
+    private ICube variableObject;
     //Array of cubeclass holds the Gameobjects
     private Cube[] arrayOfCubes;
     private int[,,] body = new int[3, 3, 3]{
@@ -213,6 +254,8 @@ public class testScript : MonoBehaviour
                 { { 10, 11, 12}, {13, 14, 15},{16,17,18 } },
                 { { 19, 20, 21}, {22, 23, 24},{25,26,27 } }
             };
+
+    private GameObject nameGameObject;
     // Start is called before the first frame update
     public void start()
     {
@@ -241,14 +284,14 @@ public class testScript : MonoBehaviour
                 { { 10, 11, 12,13}, {13, 14, 15,16},{16,17,18,19 } },
             };*/
 
-        int[,,] body3D = new int[1, 2, 3]{
+        /*int[,,] body3D = new int[1, 2, 3]{
                 { { 1, 2, 3}, {4, 5, 6} },
-            };
-        /*int[,,] body3D = new int[3, 3, 3]{
+            };*/
+        int[,,] body3D = new int[3, 3, 3]{
                 { { 1, 2, 3}, {4, 5, 6}, {7,8,9 }    },
                 { { 10, 11, 12}, {13, 14, 15},{16,17,18 } },
                 { { 19, 20, 21}, {22, 23, 24},{25,26,27 } }
-            };*/
+            };
         /*int[,,] body3D = new int[4, 4, 4]{
                 { { 1, 2, 3 ,4}, {4, 5, 6,7}, {7,8,9,10 }, {4, 5, 6,7},   },
                 { { 10, 11, 12,13}, {13, 14, 15,14},{16,17,18,19 } , {4, 5, 6,7}, },
@@ -267,34 +310,34 @@ public class testScript : MonoBehaviour
         Debug.Log(stringValue.type);
 
         GameObject placeHolderObject = new GameObject("placeHolder");
-        placeHolderObject.transform.position = new Vector3(0, 0, 0);
-
+        nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
+        nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
+        /*placeHolderObject.transform.position = new Vector3(0, 0, 0);
         VariableDeclare<int>(longValue,placeHolderObject);
         placeHolderObject.transform.position = new Vector3(0.5f, 0, 0);
-        /*VariableDeclare<float>(doubleValue, placeHolderObject);
+        VariableDeclare<float>(doubleValue, placeHolderObject);
         placeHolderObject.transform.position = new Vector3(1.0f, 0, 0);
         VariableDeclare<string>(stringValue, placeHolderObject);*/
         //Array1DDeclare(array, shape1D, body1D, placeHolderObject);
-        //Array2DDeclare(array, shape2D, body2D, placeHolderObject);
-        //Array3DDeclare(array, shape3D, body3D,placeHolderObject);
+        /*Array2DDeclare(array, shape2D, body2D, placeHolderObject);*/
+        Array3DDeclare(array, shape3D, body3D,placeHolderObject);
     }
 
     private void VariableDeclare<T>(ContentType variable,GameObject placeHolder)
     {
-        var variableCube = new VariableCube<T>(variable);
-        variableObject = variableCube.cube;
-        variableCube.cube.transform.SetParent(placeHolder.transform);
-        variableCube.position = placeHolder.transform.position;
-        variableCube.rotation = placeHolder.transform.rotation;
-        float offset = variableCube.cube.transform.localScale.x * 0.5f;
-        variableCube.position += new Vector3(0, offset, 0);
+        variableObject = new VariableCube<T>(variable);
+        variableObject.cube.transform.SetParent(placeHolder.transform);
+        variableObject.position = placeHolder.transform.position;
+        variableObject.rotation = placeHolder.transform.rotation;
+        float offset = variableObject.scale.x * 0.5f;
+        variableObject.position += new Vector3(0, offset, 0);
     }
 
     public void Highlight(ContentType value)
     {
         Color targetColor = new Color(1, 1, 1, 1);
         Material materialToChange;
-        materialToChange = variableObject.GetComponent<Renderer>().material;
+        materialToChange = variableObject.cube.GetComponent<Renderer>().material;
         StartCoroutine(LerpFunctionHighlight(materialToChange, targetColor, Constants.ITER_TIMER));
     }
 
@@ -421,6 +464,10 @@ public class testScript : MonoBehaviour
             indexGameObject.transform.SetParent(array.transform);
             indexGameObject.transform.position = new Vector3(xPosition, yPosition  , 0) - midpoint;
         }
+        nameGameObject.transform.SetParent(array.transform);
+        nameGameObject.transform.localPosition = new Vector3(0, yPosition+2f*offset, 0) - midpoint;
+        nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
+
         for (int i = 0; i < shape[0]; i++)
         {
             xPosition = -(arrayScale * 0.5f) - offset * 2;
@@ -431,7 +478,6 @@ public class testScript : MonoBehaviour
             indexGameObject.transform.position = new Vector3(xPosition, yPosition, 0) - midpoint;
         }
         array.transform.position += new Vector3(0, shape[0] * arrayOfCubes[0].scale.x - offset, 0);
-
     }
 
     private void Array3DDeclare(GameObject array, int[] shape, int[,,] body, GameObject placeHolder)
@@ -482,6 +528,9 @@ public class testScript : MonoBehaviour
             indexGameObject.transform.SetParent(array.transform);
             indexGameObject.transform.position = new Vector3(xPosition-midpoint.x, yPosition-midpoint.y, zPosition-midpoint.z) ;
         }
+        nameGameObject.transform.SetParent(array.transform);
+        nameGameObject.transform.localPosition = new Vector3(0, yPosition+2f*offset, zPosition) - midpoint;
+        nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
         for (int i = 0; i < shape[1]; i++)
         {
             xPosition = -(arrayScale * 0.5f) - offset * 1.5f;

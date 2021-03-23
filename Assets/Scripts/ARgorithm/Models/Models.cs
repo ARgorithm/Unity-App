@@ -131,6 +131,9 @@ namespace ARgorithm.Models{
                         case "array":
                             this.Add(id, new ArrayStructure());
                             break;
+                        case "variable":
+                            this.Add(id, new VariableStructure());
+                            break;
                         default:
                             this.Add(id, new BaseStructure());
                             break;
