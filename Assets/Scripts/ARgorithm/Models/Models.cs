@@ -134,6 +134,33 @@ namespace ARgorithm.Models{
                         case "variable":
                             this.Add(id, new VariableStructure());
                             break;
+                        case "string":
+                            this.Add(id, new StringStructure());
+                            break;
+                        case "stack":
+                            this.Add(id, new StackStructure());
+                            break;
+                        case "queue":
+                            this.Add(id, new QueueStructure());
+                            break;
+                        case "priorityqueue":
+                            this.Add(id, new PriorityQueueStructure());
+                            break;
+                        case "set":
+                            this.Add(id, new SetStructure());
+                            break;
+                        case "vector":
+                            this.Add(id, new VectorStructure());
+                            break;
+                        case "ll":
+                            this.Add(id, new LinkedListStructure());
+                            break;
+                        case "dll":
+                            this.Add(id, new DoublyLinkedListStructure());
+                            break;
+                        case "map":
+                            this.Add(id, new MapStructure());
+                            break;
                         default:
                             this.Add(id, new BaseStructure());
                             break;
