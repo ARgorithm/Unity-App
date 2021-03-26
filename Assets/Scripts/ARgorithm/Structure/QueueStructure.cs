@@ -14,13 +14,70 @@ namespace ARgorithm.Structure
 {
     public class QueueStructure : BaseStructure
     {
+        string name = "";
+        GameObject structure;
+        QueueAnimator animator;
+
         public QueueStructure()
         {
-
+            structure = new GameObject("QueueStructure");
+            animator = structure.AddComponent(typeof(QueueAnimator)) as QueueAnimator;
         }
-        public override void Operate(State state, GameObject gameObject)
+        public override void Operate(State state, GameObject placeholder)
         {
-            base.Operate(state, gameObject);
+            string funcType = state.state_type.Split('_').ToList()[1];
+            switch (funcType)
+            {
+                case "declare":
+                    this.Declare(state, placeholder);
+                    break;
+                case "pop":
+                    this.Pop(state);
+                    break;
+                case "push":
+                    this.Push(state);
+                    break;
+                case "front":
+                    this.Front(state);
+                    break;
+                case "back":
+                    this.Back(state);
+                    break;
+                default:
+                    throw new UnsupportedStateException(String.Format("queue_{0} state type is not supported", funcType));
+            }
+        }
+
+        private void Declare(State state, GameObject placeholder)
+        {
+            this.rendered = true;
+            this.name = (string)state.state_def["variable_name"];
+            JArray jt = (JArray)state.state_def["body"];
+            List<ContentType> body = new List<ContentType>();
+            foreach (JToken x in jt)
+                body.Add(new ContentType(x));
+            animator.Declare(this.name, body, placeholder);
+        }
+
+        private void Push(State state)
+        {
+            ContentType element = new ContentType((JToken)state.state_def["element"]);
+            animator.Push(element);
+        }
+
+        private void Pop(State state)
+        {
+            animator.Pop();
+        }
+
+        private void Front(State state)
+        {
+            animator.Front();
+        }
+
+        private void Back(State state)
+        {
+            animator.Back();
         }
 
         public override void Undo(State state)

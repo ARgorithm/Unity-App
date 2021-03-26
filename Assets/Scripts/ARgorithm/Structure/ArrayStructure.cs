@@ -20,7 +20,6 @@ namespace ARgorithm.Structure
         */
         
         public string name = "";
-        private NDimensionalArray body;
         private ArrayAnimator animator;
         private GameObject structure;
         public ArrayStructure(){
@@ -68,9 +67,8 @@ namespace ARgorithm.Structure
                     JToken lastValue;
                     if (state.state_def.TryGetValue("last_value",out lastValue))
                     {
-                        this.body[index] = new ContentType(lastValue);
                         List<int> _index = NDimensionalArray.ToListIndex(index);
-                        this.animator.Set(_index , this.body[index]);
+                        this.animator.Set(_index , new ContentType(lastValue));
                     }
                     break;
                 case "compare":
@@ -78,13 +76,9 @@ namespace ARgorithm.Structure
                 case "swap":
                     JToken index1 = state.state_def["index1"];
                     JToken index2 = state.state_def["index2"];
-                    ContentType temp = this.body[index1];
-                    this.body[index1] = this.body[index2];
-                    this.body[index2] = temp;
                     List<int> _index1 = NDimensionalArray.ToListIndex(index1);
                     List<int> _index2 = NDimensionalArray.ToListIndex(index2);
-                    this.animator.Set(_index1 , this.body[index1]);
-                    this.animator.Set(_index2 , this.body[index2]);
+                    this.animator.Swap(_index1, _index2);
                     break;
                 default:
                     break;
@@ -97,7 +91,7 @@ namespace ARgorithm.Structure
             this.rendered = true;
             this.name = (string) state.state_def["variable_name"];
             JArray jt = (JArray) state.state_def["body"];
-            this.body = new NDimensionalArray(jt);
+            NDimensionalArray body = new NDimensionalArray(jt);
             animator.Declare(this.name, body, placeholder);
         }
         private void Iter(State state)
@@ -105,12 +99,9 @@ namespace ARgorithm.Structure
             // Highlight certain index of Array and might update value
             JToken index = state.state_def["index"];
             JToken value;
-            if (state.state_def.TryGetValue("value",out value))
-            {
-                this.body[index] = new ContentType(value);    
-            }
+            state.state_def.TryGetValue("value",out value);
             List<int> _index = NDimensionalArray.ToListIndex(index);
-            animator.Iter(_index, this.body[index]);
+            animator.Iter(_index, new ContentType(value));
         }
 
         private void Compare(State state)
@@ -128,9 +119,6 @@ namespace ARgorithm.Structure
             // Swaps value stored at indexes
             JToken index1 = state.state_def["index1"];
             JToken index2 = state.state_def["index2"];
-            ContentType temp = this.body[index1];
-            this.body[index1] = this.body[index2];
-            this.body[index2] = temp;
             List<int> _index1 = NDimensionalArray.ToListIndex(index1);
             List<int> _index2 = NDimensionalArray.ToListIndex(index2);
             animator.Swap(_index1, _index2);

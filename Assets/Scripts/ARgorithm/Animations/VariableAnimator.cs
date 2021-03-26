@@ -164,12 +164,12 @@ namespace ARgorithm.Animations
 
         private ICube variableObject;
         private GameObject nameGameObject;
-        private string name;
+        private string _name;
         public void Declare(string name, ContentType variable, GameObject placeHolder)
         {
-            this.name = name;
+            this._name = name;
             nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
-            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this._name);
             nameGameObject.transform.SetParent(placeHolder.transform);
             nameGameObject.transform.localPosition = new Vector3(0, 0, 0);
             nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);

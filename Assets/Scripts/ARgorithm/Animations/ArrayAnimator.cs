@@ -112,14 +112,14 @@ namespace ARgorithm.Animations
         //Array of cubeclass holds the Gameobjects
         private Cube[] arrayOfCubes;
         private NDimensionalArray body;
-        private string name;
+        private string _name;
         private GameObject nameGameObject;
         public void Declare(string name, NDimensionalArray body, GameObject placeHolder)
         {
             /*
             Sets Array represented by Cubes at placeholder
             */
-            this.name = name;
+            this._name = name;
             this.body = body;
             GameObject array = new GameObject("array");
             
@@ -143,7 +143,7 @@ namespace ARgorithm.Animations
         {
             List<int> shape = body.Shape;
             nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
-            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this._name);
             nameGameObject.transform.SetParent(placeHolder.transform);
             nameGameObject.transform.localPosition = Vector3.zero;
             nameGameObject.transform.localRotation = new Quaternion(0, 0, 0, 0);
@@ -195,7 +195,7 @@ namespace ARgorithm.Animations
         {
             List<int> shape = body.Shape;
             nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
-            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this._name);
             // Handles 2-D arrays
             arrayOfCubes = new Cube[shape[0] * shape[1]];
             array.transform.SetParent(placeHolder.transform);
@@ -262,7 +262,7 @@ namespace ARgorithm.Animations
         {
             List<int> shape = body.Shape;
             nameGameObject = Instantiate(Resources.Load("NamePrefab") as GameObject);
-            nameGameObject.GetComponent<TextMeshPro>().SetText(this.name);
+            nameGameObject.GetComponent<TextMeshPro>().SetText(this._name);
             // Handles 3-D arrays
             arrayOfCubes = new Cube[shape[0] * shape[1] * shape[2]];
             array.transform.SetParent(placeHolder.transform, false);
