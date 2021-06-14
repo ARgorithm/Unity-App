@@ -258,7 +258,7 @@ public class testScript : MonoBehaviour
     //start is binded to start button
     public void startButton()
     {
-        var body = new List<int> { 1, 2, 3, 4, 5 };
+        var body = new List<int> {};
         StackDeclare<int>(body, placeHolder);
     }
     //push is bindded to push button
