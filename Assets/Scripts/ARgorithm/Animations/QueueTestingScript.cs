@@ -6,33 +6,6 @@ using ARgorithm.Structure.Typing;
 using Newtonsoft.Json.Linq;
 
 
-interface IArrow
-{
-    ContentType faceValue
-    {
-        get; set;
-    }
-
-    Vector3 position
-    {
-        get; set;
-    }
-
-    Vector3 scale
-    {
-        get; set;
-    }
-
-    Quaternion rotation
-    {
-        get; set;
-    }
-
-    GameObject arrow
-    {
-        get; set;
-    }
-}
 
 public class QueueTestingScript : MonoBehaviour
 {
@@ -185,42 +158,59 @@ public class QueueTestingScript : MonoBehaviour
         Front();
     }
 
+    public void backButton()
+    {
+        Back();
+    }
+    //Add Last and Remove First. (deque)
     private void QueueDeclare<T>(List<int> body, GameObject placeHolder)
     {
         this.placeHolder = placeHolder;
         this.queueOfArrows = new LinkedList<IArrow>();
         if (body.Count == 0)
             return;
-        foreach(var data in body)
+        var back = new VariableArrow<int>(new ContentType(body[0]));
+        back.position = placeHolder.transform.position;
+        back.arrow.transform.SetParent(placeHolder.transform);
+        this.queueOfArrows.AddLast(back);
+        for(int i=1; i<body.Count; i++)
         {
-            var arrow = new VariableArrow<int>(new ContentType(data));
-            queueOfArrows.AddLast(arrow);
+            var arrowObj = new VariableArrow<int>(new ContentType(body[i]));
+            arrowObj.arrow.transform.SetParent(placeHolder.transform);
+            arrowObj.position = this.queueOfArrows.Last.Value.position;
+            arrowObj.position -= new Vector3(arrowObj.scale.x * 1.25f, 0, 0);
+            this.queueOfArrows.AddLast(arrowObj);
         }
     }
 
-    public void Push(int value)
+    public void Push(int element)
     {
-        var topOfStack = new VariableArrow<int>(new ContentType(value));
+        var arrow = new VariableArrow<int>(new ContentType(element));
         if (queueOfArrows.Count == 0)
         {
-            topOfStack.position = this.placeHolder.transform.position;
-            topOfStack.arrow.transform.SetParent(placeHolder.transform);
-            queueOfArrows.Enqueue(topOfStack);
+            arrow.position = this.placeHolder.transform.position;
+            arrow.arrow.transform.SetParent(placeHolder.transform);
+            queueOfArrows.AddLast(arrow);
             return;
         }
-        topOfStack.position = this.queueOfArrows.Peek().arrow.transform.position;
-        topOfStack.position += new Vector3(topOfStack.scale.x * 1.5f, 0, 0);
-        topOfStack.arrow.transform.SetParent(placeHolder.transform);
-        queueOfArrows.Enqueue(topOfStack);
+        arrow.position = this.queueOfArrows.Last.Value.arrow.transform.position;
+        arrow.position -= new Vector3(arrow.scale.x * 1.25f, 0, 0);
+        arrow.arrow.transform.SetParent(placeHolder.transform);
+        queueOfArrows.AddLast(arrow);
     }
 
     public void Pop()
     {
         if (this.queueOfArrows.Count == 0)
             return;
-        var topOfStack = this.queueOfArrows.Peek();
-        this.queueOfArrows.Dequeue();
-        Destroy(topOfStack.arrow);
+        foreach(var arrow in queueOfArrows)
+        {
+            arrow.position += new Vector3(arrow.scale.x * 1.25f, 0, 0); 
+        }
+        var arrowFirst = queueOfArrows.First.Value;
+        Destroy(arrowFirst.arrow);
+        queueOfArrows.RemoveFirst();
+        
     }
 
     public void Front()
@@ -229,7 +219,17 @@ public class QueueTestingScript : MonoBehaviour
             return;
         Color targetColor = new Color(1, 1, 1, 1);
         Material materialToChange;
-        materialToChange = this.queueOfArrows.Peek().arrow.GetComponent<Renderer>().material;
+        materialToChange = this.queueOfArrows.First.Value.arrow.GetComponent<Renderer>().material;
+        StartCoroutine(LerpFunctionHighlight(materialToChange, targetColor, Constants.ITER_TIMER));
+    }
+
+    public void Back()
+    {
+        if (this.queueOfArrows.Count == 0)
+            return;
+        Color targetColor = new Color(1, 1, 1, 1);
+        Material materialToChange;
+        materialToChange = this.queueOfArrows.Last.Value.arrow.GetComponent<Renderer>().material;
         StartCoroutine(LerpFunctionHighlight(materialToChange, targetColor, Constants.ITER_TIMER));
     }
 
