@@ -156,6 +156,7 @@ namespace ARgorithm.Animations
                 arrow.position += new Vector3(arrow.scale.x * 1.25f, 0, 0);
             }
             var arrowFirst = queueOfArrows.First.Value;
+            arrowFirst.arrow.transform.SetParent(null);
             Destroy(arrowFirst.arrow);
             queueOfArrows.RemoveFirst();
         }
@@ -219,6 +220,36 @@ namespace ARgorithm.Animations
                 yield return null;
             }
             materialToChange.color = startValue;
+        }
+
+        public void PopLast()
+        {
+            if (this.queueOfArrows.Count == 0)
+                return;
+            var arrowLast = queueOfArrows.Last.Value;
+            arrowLast.arrow.transform.SetParent(null);
+            Destroy(arrowLast.arrow);
+            queueOfArrows.RemoveLast();
+        }
+
+        public void PushFirst(ContentType element)
+        {
+            var arrow = new VariableArrow(element);
+            if (queueOfArrows.Count == 0)
+            {
+                arrow.position = this.placeholder.transform.position;
+                arrow.arrow.transform.SetParent(placeholder.transform);
+                queueOfArrows.AddFirst(arrow);
+                return;
+            }
+            foreach (var ar in queueOfArrows)
+            {
+                ar.position -= new Vector3(arrow.scale.x * 1.25f, 0, 0);
+            }
+            arrow.position = placeholder.transform.position;
+            arrow.arrow.transform.SetParent(placeholder.transform);
+            queueOfArrows.AddFirst(arrow);
+
         }
     }
 }

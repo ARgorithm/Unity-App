@@ -82,7 +82,27 @@ namespace ARgorithm.Structure
 
         public override void Undo(State state)
         {
-            base.Undo(state);
+            // Called to undo a change enforced by `state`
+            string funcType = state.state_type.Split('_').ToList()[1];
+            switch (funcType)
+            {
+                case "declare":
+                    break;
+                case "push":
+                    animator.PopLast();
+                    break;
+                case "pop":
+                    ContentType element = new ContentType((JToken)state.state_def["element"]);
+                    animator.PushFirst(element);
+                    break;
+                case "front":
+                    break;
+                case "back":
+                    
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

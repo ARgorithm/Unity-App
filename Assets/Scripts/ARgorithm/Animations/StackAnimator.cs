@@ -67,7 +67,7 @@ namespace ARgorithm.Animations
             {
                 this.tile = (GameObject)Instantiate(Resources.Load("Tile") as GameObject);
                 var cubeRenderer = this.tile.GetComponent<Renderer>();
-                cubeRenderer.material.SetColor("_Color", Color.blue);
+                cubeRenderer.material.SetColor("_Color", Color.cyan);
                 this._scale = this.tile.transform.localScale;
                 this.faceValue = value;
             }
