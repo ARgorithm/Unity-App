@@ -80,7 +80,7 @@ namespace ARgorithm.Animations
                 }
                 set
                 {
-                    this.arrow.transform.localPosition = value;
+                    this.arrow.transform.position = value;
                     this._position = value;
                 }
             }
@@ -134,13 +134,13 @@ namespace ARgorithm.Animations
             if (body.Count == 0)
                 return;
             var back = new VariableArrow(body[0]);
-            back.position = placeHolder.transform.position;
-            back.arrow.transform.SetParent(placeHolder.transform);
+            back.position = placeholder.transform.position;
+            back.arrow.transform.SetParent(placeholder.transform);
             this.queueOfArrows.AddLast(back);
             for (int i = 1; i < body.Count; i++)
             {
                 var arrowObj = new VariableArrow(body[i]);
-                arrowObj.arrow.transform.SetParent(placeHolder.transform);
+                arrowObj.arrow.transform.SetParent(placeholder.transform);
                 arrowObj.position = this.queueOfArrows.Last.Value.position;
                 arrowObj.position -= new Vector3(arrowObj.scale.x * 1.25f, 0, 0);
                 this.queueOfArrows.AddLast(arrowObj);

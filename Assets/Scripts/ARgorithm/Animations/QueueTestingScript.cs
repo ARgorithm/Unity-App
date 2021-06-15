@@ -83,7 +83,7 @@ public class QueueTestingScript : MonoBehaviour
             }
             set
             {
-                this.arrow.transform.localPosition = value;
+                this.arrow.transform.position = value;
                 this._position = value;
             }
         }
@@ -205,7 +205,7 @@ public class QueueTestingScript : MonoBehaviour
             return;
         foreach(var arrow in queueOfArrows)
         {
-            arrow.position += new Vector3(arrow.scale.x * 1.25f, 0, 0); 
+            arrow.position += new Vector3(arrow.scale.x * 1.25f, 0, 0);
         }
         var arrowFirst = queueOfArrows.First.Value;
         Destroy(arrowFirst.arrow);
