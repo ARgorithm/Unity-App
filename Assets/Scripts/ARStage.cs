@@ -121,12 +121,14 @@ public class ARStage : MonoBehaviour
     }
     public void Next()
     {
-        index++;
-        if (index >= stageData.size)
+        Debug.Log(index);
+        if (index > stageData.states.Count-1)
         {
-            index = stageData.size - 1;
+            index = stageData.states.Count - 1;
             return;
         }
+        if(index < stageData.states.Count)
+            index++;
         State args = stageData.states[index];
         Debug.Log(args.state_type);
         if (args.state_type == "comment")
@@ -175,12 +177,21 @@ public class ARStage : MonoBehaviour
     }
     public void Undo()
     {
+        Debug.Log(index);
         if (index <= -1)
+        {
+            index = 0;
             return;
+        }
+
+        if (index >= stageData.states.Count - 1)
+            index = stageData.states.Count - 2;
+
         State args = stageData.states[index];
         if (args.state_type == "comment")
         {
-            index--;
+            if(index >= 0)   
+                index--;
             return;
         }
 
@@ -195,7 +206,8 @@ public class ARStage : MonoBehaviour
 
         BaseStructure currStructure = stageData.objectMap[id];
         currStructure.Undo(args);
-        index--;
+        if(index>=0)
+            index--;
     }
     public void BackButton()
     {

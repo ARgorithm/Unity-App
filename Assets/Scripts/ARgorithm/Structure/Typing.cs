@@ -20,11 +20,18 @@ namespace ARgorithm.Structure.Typing
         */
         public string Value;
         public bool isObjectRef;
+        public string type;
+        string[] types = new string[18]{"None","Object","Array","Constructor","Property","Comment",
+                "Integer","Float","String","Boolean","Null","Undefined","Date","Raw","Bytes","Guid",
+                "Uri","TimeSpan" };
         private string objectRefPattern = @"^\$ARgorithmToolkit\.([A-Za-z]+)\:([0-9]+)$"; 
 
         public ContentType(){}
 
         public ContentType(JToken jt){
+            JTokenType typeJT = jt.Type;
+            int c = (int)typeJT;
+            type = types[c];
             Regex rgx = new Regex(this.objectRefPattern);
             Match match = rgx.Match( (string) jt);
             if(match.Success){
