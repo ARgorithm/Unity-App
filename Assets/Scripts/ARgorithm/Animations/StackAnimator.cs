@@ -160,19 +160,63 @@ namespace ARgorithm.Animations
                 topOfStack.position += new Vector3(0, topOfStack.scale.y * 0.5f, 0);
                 topOfStack.tile.transform.SetParent(placeHolder.transform);
                 stackOfTiles.Push(topOfStack);
+                StartCoroutine(LerpPushFunction(topOfStack.tile, Constants.PUSH_TIMER));
                 return;
             }
             topOfStack.position = this.stackOfTiles.Peek().tile.transform.position;
             topOfStack.position += new Vector3(0, topOfStack.scale.y * 1.5f, 0);
             topOfStack.tile.transform.SetParent(placeHolder.transform);
             stackOfTiles.Push(topOfStack);
+            StartCoroutine(LerpPushFunction(topOfStack.tile, Constants.PUSH_TIMER));
         }
-
+        //Function to Animate the Addition of a Tile to top of the Stack
+        IEnumerator LerpPushFunction(GameObject topOfStack, float duration)
+        {
+            float time = 0;
+            Vector3 startPosition = topOfStack.transform.position;
+            Vector3 targetPosition = topOfStack.transform.position + new Vector3(0, 0.05f, 0);
+            Material materialToChange = topOfStack.GetComponent<Renderer>().material;
+            Color endValueOfColor = materialToChange.color;
+            Color startValueOfColor = new Color(0, 0, 0, 0);
+            while (time < duration)
+            {
+                topOfStack.transform.position = Vector3.Lerp(targetPosition, startPosition, time / duration);
+                materialToChange.color = Color.Lerp(startValueOfColor, endValueOfColor, time / duration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            topOfStack.transform.position = startPosition;
+            materialToChange.color = endValueOfColor;
+        }
         public void Pop()
         {
             if (this.stackOfTiles.Count == 0)
                 return;
+            /*var topOfStack = this.stackOfTiles.Peek();
+            this.stackOfTiles.Pop();
+            Destroy(topOfStack.tile);*/
+            StartCoroutine(LerpPopFunction(Constants.POP_TIMER));
+        }
+        //Function to Animate the removal of a Tile from top of the Stack
+        IEnumerator LerpPopFunction(float duration)
+        {
             var topOfStack = this.stackOfTiles.Peek();
+            float time = 0;
+            Vector3 startPosition = topOfStack.tile.transform.position;
+            Vector3 targetPosition = topOfStack.tile.transform.position + new Vector3(0, 0.05f, 0);
+            Material materialToChange = topOfStack.tile.GetComponent<Renderer>().material; ;
+            Color startValueOfColor = materialToChange.color;
+            Color endValueOfColor = new Color(0, 0, 0, 0);
+            while (time < duration)
+            {
+                topOfStack.tile.transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+                materialToChange.color = Color.Lerp(startValueOfColor, endValueOfColor, time / duration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            topOfStack.tile.transform.position = targetPosition;
+            materialToChange.color = endValueOfColor;
+            //Destroys GameObject and removes from stack here
             this.stackOfTiles.Pop();
             Destroy(topOfStack.tile);
         }

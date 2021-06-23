@@ -35,7 +35,6 @@ interface IArrow
 
 namespace ARgorithm.Animations
 {
-    
     public class QueueAnimator : MonoBehaviour
     {
         class VariableArrow : IArrow
@@ -125,6 +124,8 @@ namespace ARgorithm.Animations
                 }
             }
         }
+
+        //Variables required for all the functions and stores the state of the system.
         private GameObject placeholder;
         private LinkedList<IArrow> queueOfArrows;
         public void Declare(string name, List<ContentType> body, GameObject placeHolder)
@@ -151,16 +152,57 @@ namespace ARgorithm.Animations
         {
             if (this.queueOfArrows.Count == 0)
                 return;
-            foreach (var arrow in queueOfArrows)
+            /*foreach (var arrow in queueOfArrows)
             {
                 arrow.position += new Vector3(arrow.scale.x * 1.25f, 0, 0);
             }
             var arrowFirst = queueOfArrows.First.Value;
             arrowFirst.arrow.transform.SetParent(null);
             Destroy(arrowFirst.arrow);
-            queueOfArrows.RemoveFirst();
+            queueOfArrows.RemoveFirst();*/
+            StartCoroutine(LerpPopFunction(Constants.POP_TIMER));
         }
+        //Function to Animate the Removal of an Arrow at the front of the Queue 
+        //and moving the queue forward (Recentering of the queue in 3D space)
+        IEnumerator LerpPopFunction(float duration)
+        {
+            var arrowFirst = queueOfArrows.First.Value;
+            float time = 0;
+            Vector3 startPosition = arrowFirst.arrow.transform.position;
+            Vector3 targetPosition = arrowFirst.arrow.transform.position + new Vector3(0.05f, 0, 0);
+            Material materialToChange = arrowFirst.arrow.GetComponent<Renderer>().material; ;
+            Color startValueOfColor = materialToChange.color;
+            Color endValueOfColor = new Color(0, 0, 0, 0);
+            while (time < duration)
+            {
+                arrowFirst.arrow.transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+                materialToChange.color = Color.Lerp(startValueOfColor, endValueOfColor, time / duration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            arrowFirst.arrow.transform.position = targetPosition;
+            materialToChange.color = endValueOfColor;
 
+            //Destroys Gameobject and removes from queue here
+            arrowFirst.arrow.transform.SetParent(null);
+            Destroy(arrowFirst.arrow);
+            queueOfArrows.RemoveFirst();
+
+            //Moving the queue forward
+            foreach (var arrow in this.queueOfArrows)
+            {
+                time = 0;
+                Vector3 QstartPosition = arrow.arrow.transform.position;
+                Vector3 QtargetPosition = QstartPosition + new Vector3(arrow.arrow.transform.localScale.x * 1.25f, 0, 0);
+                while (time < duration)
+                {
+                    arrow.arrow.transform.position = Vector3.Lerp(QstartPosition, QtargetPosition, time / duration);
+                    time += Time.deltaTime;
+                    yield return null;
+                }
+                arrow.arrow.transform.position = QtargetPosition;
+            }
+        }
         public void Push(ContentType element)
         {
             var arrow = new VariableArrow(element);
@@ -169,12 +211,33 @@ namespace ARgorithm.Animations
                 arrow.position = this.placeholder.transform.position;
                 arrow.arrow.transform.SetParent(placeholder.transform);
                 queueOfArrows.AddLast(arrow);
+                StartCoroutine(LerpPushFunction(arrow.arrow, Constants.PUSH_TIMER));
                 return;
             }
             arrow.position = this.queueOfArrows.Last.Value.arrow.transform.position;
             arrow.position -= new Vector3(arrow.scale.x * 1.25f, 0, 0);
             arrow.arrow.transform.SetParent(placeholder.transform);
             queueOfArrows.AddLast(arrow);
+            StartCoroutine(LerpPushFunction(arrow.arrow, Constants.PUSH_TIMER));
+        }
+        //Function to Animate the Addition of an Arrow to the back of the Queue 
+        IEnumerator LerpPushFunction(GameObject arrow, float duration)
+        {
+            float time = 0;
+            Vector3 startPosition = arrow.transform.position;
+            Vector3 targetPosition = arrow.transform.position + new Vector3(-0.05f, 0, 0);
+            Material materialToChange = arrow.GetComponent<Renderer>().material;
+            Color endValueOfColor = materialToChange.color;
+            Color startValueOfColor = new Color(0, 0, 0, 0);
+            while (time < duration)
+            {
+                arrow.transform.position = Vector3.Lerp(targetPosition, startPosition, time / duration);
+                materialToChange.color = Color.Lerp(startValueOfColor, endValueOfColor, time / duration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            arrow.transform.position = startPosition;
+            materialToChange.color = endValueOfColor;
         }
 
         public void Front()
@@ -196,7 +259,7 @@ namespace ARgorithm.Animations
             materialToChange = this.queueOfArrows.Last.Value.arrow.GetComponent<Renderer>().material;
             StartCoroutine(LerpFunctionHighlight(materialToChange, targetColor, Constants.ITER_TIMER));
         }
-
+        //Function to Highlight the Arrow of Interest in the 3D space
         IEnumerator LerpFunctionHighlight(Material materialToChange, Color endValue, float duration)
         {
             float time = 0;

@@ -13,6 +13,8 @@ public static class Constants
     public const float SWAP_TIMER = 0.5f;
     public const float COMPARE_TIMER = 0.5f;
     public const float ITER_TIMER = 0.5f;
+    public const float POP_TIMER = 0.5f;
+    public const float PUSH_TIMER = 0.5f;
 }
 
 namespace ARgorithm.Animations 

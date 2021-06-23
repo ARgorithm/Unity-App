@@ -54,7 +54,17 @@ public class ARStage : MonoBehaviour
         State state = stageData.states[0];
         string funcType = state.state_type.Split('_').ToList()[1];
         if (funcType == "declare")
+        {
             placed = false;
+            return;
+        }
+
+        if (funcType == "comment")
+        {
+            ChangeComments((string)state.state_def["comments"]);
+            return;
+        }
+        ChangeComments((string)state.state_def["comments"]);
     }
 
     void FixedUpdate()
@@ -63,9 +73,9 @@ public class ARStage : MonoBehaviour
             UpdatePlacementPose();
             UpdatePlacementIndicator();
         }
-        if(index > -1 && index<=stageData.size)
+        if(index > -1 && index<stageData.size)
         {
-            ChangeStateCounter(index, stageData.size);
+            ChangeStateCounter(index + 1, stageData.size);
         }
     }
 
@@ -124,7 +134,7 @@ public class ARStage : MonoBehaviour
         Debug.Log(index);
         if (index > stageData.states.Count-1)
         {
-            index = stageData.states.Count - 1;
+            index = stageData.states.Count;
             return;
         }
         if(index < stageData.states.Count)
@@ -178,19 +188,10 @@ public class ARStage : MonoBehaviour
     public void Undo()
     {
         Debug.Log(index);
-        if (index <= -1)
-        {
-            index = 0;
-            return;
-        }
-
-        if (index >= stageData.states.Count - 1)
-            index = stageData.states.Count - 2;
-
         State args = stageData.states[index];
         if (args.state_type == "comment")
         {
-            if(index >= 0)   
+            if(index > 0)   
                 index--;
             return;
         }
@@ -206,7 +207,7 @@ public class ARStage : MonoBehaviour
 
         BaseStructure currStructure = stageData.objectMap[id];
         currStructure.Undo(args);
-        if(index>=0)
+        if(index>0)
             index--;
     }
     public void BackButton()

@@ -10,31 +10,31 @@ interface ITile
 {
     ContentType faceValue
     {
-        get;set;
+        get; set;
     }
 
     Vector3 position
     {
-        get;set;
+        get; set;
     }
 
     Vector3 scale
     {
-        get;set;
+        get; set;
     }
 
     Quaternion rotation
     {
-        get;set;
+        get; set;
     }
 
     GameObject tile
     {
-        get;set;
+        get; set;
     }
 }
 
-public class testScript : MonoBehaviour
+public class StackTestingScript : MonoBehaviour
 {
     class VariableTile<T> : ITile
     {
@@ -57,7 +57,7 @@ public class testScript : MonoBehaviour
                     var child = this.tile.transform.GetChild(i).gameObject;
                     string text;
                     string type = typeof(T).Name;
-             
+
                     if (type == "Int32")
                     {
                         text = _faceValue.Value.ToString();
@@ -110,7 +110,7 @@ public class testScript : MonoBehaviour
             }
             set
             {
-                this.tile.transform.localPosition = value;
+                this.tile.transform.position = value;
                 this._position = value;
             }
         }
@@ -155,98 +155,6 @@ public class testScript : MonoBehaviour
             }
         }
     }
-    class Cube
-    {
-        private int _faceValue;
-        private int _index;
-        private Vector3 _position;
-        private Vector3 _scale;
-        public GameObject cube;
-        private Quaternion _rotation;
-        public int index
-        {
-            get
-            {
-                return _index;
-            }
-            set
-            {
-                _index = value;
-                /*
-                var child = this.cube.transform.GetChild(5).gameObject;
-                child.GetComponent<TextMeshPro>().SetText("[" + _index.ToString() + "]");
-                */
-            }
-
-        }
-
-        public int faceValue
-        {
-            get
-            {
-                return _faceValue;
-            }
-            set
-            {
-                _faceValue = value;
-                for (int i = 0; i < this.cube.transform.childCount; i++)
-                {
-                    var child = this.cube.transform.GetChild(i).gameObject;
-                    child.GetComponent<TextMeshPro>().SetText(_faceValue.ToString());
-                }
-            }
-        }
-
-        public Cube(int index, int value)
-        {
-            this.cube = (GameObject)Instantiate(Resources.Load("Cube") as GameObject);
-            this._scale = this.cube.transform.localScale;
-            this.faceValue = value;
-            this.index = index;
-        }
-
-        public Vector3 position
-        {
-            get
-            {
-                return _position;
-            }
-            set
-            {
-                this.cube.transform.localPosition = value;
-                this._position = value;
-            }
-        }
-
-        public Vector3 scale
-        {
-            get
-            {
-                return _scale;
-            }
-
-            set
-            {
-                this.cube.transform.localScale = value;
-                this._scale = value;
-            }
-        }
-
-        public Quaternion rotation
-        {
-            get
-            {
-                return _rotation;
-            }
-            set
-            {
-                this.cube.transform.rotation = value;
-                this._rotation = value;
-            }
-        }
-    }
-
-    
 
     private ITile variableObject;
     public GameObject placeHolder;
@@ -258,7 +166,7 @@ public class testScript : MonoBehaviour
     //start is binded to start button
     public void startButton()
     {
-        var body = new List<int> {};
+        var body = new List<int> {1,2,3,4 };
         StackDeclare<int>(body, placeHolder);
     }
     //push is bindded to push button
@@ -277,7 +185,7 @@ public class testScript : MonoBehaviour
         Top();
     }
 
-    private void StackDeclare<T>(List<int> body,GameObject placeHolder)
+    private void StackDeclare<T>(List<int> body, GameObject placeHolder)
     {
         this.placeHolder = placeHolder;
         this.stackOfTiles = new Stack<ITile>();
@@ -288,14 +196,14 @@ public class testScript : MonoBehaviour
         bottom.position += new Vector3(0, bottom.scale.y * 0.5f, 0);
         bottom.tile.transform.SetParent(placeHolder.transform);
         this.stackOfTiles.Push(bottom);
-        for (int i = 1; i < body.Count; i++) 
+        for (int i = 1; i < body.Count; i++)
         {
             var tileObj = new VariableTile<T>(new ContentType(body[i]));
             tileObj.tile.transform.SetParent(placeHolder.transform);
             tileObj.position = bottom.position;
             tileObj.rotation = placeHolder.transform.rotation;
             float offset = tileObj.scale.y * 0.5f;
-            tileObj.position += new Vector3(0, offset+tileObj.scale.y, 0);
+            tileObj.position += new Vector3(0, offset + tileObj.scale.y, 0);
             this.stackOfTiles.Push(tileObj);
             bottom = tileObj;
         }
@@ -310,19 +218,59 @@ public class testScript : MonoBehaviour
             topOfStack.position += new Vector3(0, topOfStack.scale.y * 0.5f, 0);
             topOfStack.tile.transform.SetParent(placeHolder.transform);
             stackOfTiles.Push(topOfStack);
+            StartCoroutine(LerpPushFunction(topOfStack.tile, Constants.COMPARE_TIMER));
+
             return;
         }
         topOfStack.position = this.stackOfTiles.Peek().tile.transform.position;
         topOfStack.position += new Vector3(0, topOfStack.scale.y * 1.5f, 0);
         topOfStack.tile.transform.SetParent(placeHolder.transform);
         stackOfTiles.Push(topOfStack);
+        StartCoroutine(LerpPushFunction(topOfStack.tile, Constants.COMPARE_TIMER));
+    }
+    IEnumerator LerpPushFunction(GameObject topOfStack, float duration)
+    {
+        float time = 0;
+        Vector3 startPosition = topOfStack.transform.position;
+        Vector3 targetPosition = topOfStack.transform.position + new Vector3(0, 0.05f, 0);
+        Material materialToChange = topOfStack.GetComponent<Renderer>().material;
+        Color endValueOfColor = materialToChange.color;
+        Color startValueOfColor = new Color(0, 0, 0, 0);
+        while (time < duration)
+        {
+            topOfStack.transform.position = Vector3.Lerp(targetPosition, startPosition, time / duration);
+            materialToChange.color = Color.Lerp(startValueOfColor, endValueOfColor, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        topOfStack.transform.position = startPosition;
+        materialToChange.color = endValueOfColor;
     }
 
     public void Pop()
     {
         if (this.stackOfTiles.Count == 0)
             return;
+        StartCoroutine(LerpPopFunction(Constants.COMPARE_TIMER));
+    }
+    IEnumerator LerpPopFunction(float duration)
+    {
         var topOfStack = this.stackOfTiles.Peek();
+        float time = 0;
+        Vector3 startPosition = topOfStack.tile.transform.position;
+        Vector3 targetPosition = topOfStack.tile.transform.position + new Vector3(0, 0.05f, 0);
+        Material materialToChange = topOfStack.tile.GetComponent<Renderer>().material; ;
+        Color startValueOfColor = materialToChange.color;
+        Color endValueOfColor = new Color(0, 0, 0, 0);
+        while (time < duration)
+        {
+            topOfStack.tile.transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+            materialToChange.color = Color.Lerp(startValueOfColor, endValueOfColor, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        topOfStack.tile.transform.position = targetPosition;
+        materialToChange.color = endValueOfColor;
         this.stackOfTiles.Pop();
         Destroy(topOfStack.tile);
     }
